@@ -85,24 +85,20 @@
           <el-input
     placeholder="请输入名字"
     suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
+    v-model="getAllByNameVar">
   </el-input>
-  <el-input
-    placeholder="请输入内容"
+  
+  <el-button @click="getAllByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
+    查询</el-button>
+  </div>
+  <div style="width: 1000px" v-if="state.show_ownerHomestay_state">
+          <el-input
+    placeholder="请输入名字"
     suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
+    v-model="ownerHomestayCheckByNameVar">
   </el-input>
-  <el-input
-    placeholder="请输入内容"
-    suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
-  </el-input>
-  <el-input
-    placeholder="请输入内容"
-    suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
-  </el-input>
-  <el-button type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
+  
+  <el-button @click="ownerHomestayCheckByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
   </div>
           <el-dropdown>
@@ -351,7 +347,7 @@ export default {
     showOwnerHomestay(){
       var _this = this
       _this.loading = true
-      axios.get(config_url+'/homestay', {
+      axios.get(config_url+'/homestay/getByOwnerId/'+ _this.ownerId, {
       })
         .then(function (response) {// 请求成功
           _this.ownerHomestay = response.data.data
@@ -504,6 +500,34 @@ export default {
           _this.showOwnerInfo()
           _this.addOwner = false
         });
+    },
+    ownerHomestayCheckByName(){
+      console.log(this.ownerHomestayCheckByNameVar)
+      var _this = this
+      axios.get( config_url+'/homestay/getByOwnerId/'+_this.ownerId+"/"+_this.ownerHomestayCheckByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.ownerHomestay=response.data.data
+         
+     
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+    },
+    getAllByName(){
+      var _this = this
+      axios.get( config_url+'/homestay/getAllByName/'+_this.getAllByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.homestayInfo=response.data.data
+     
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
     }
 
   },
@@ -533,7 +557,8 @@ export default {
         password:""
       },
       allOwnerInfo:[],
-      
+      ownerHomestayCheckByNameVar:null,
+      getAllByNameVar:null,
    
       state: {
         show_homestay_state: false,
