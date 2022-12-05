@@ -44,22 +44,9 @@ export default ({
   data(){
     return {
       timer:null,    //定时器
-      chatContent:[
-        {
-          fromId:"123",
-          toId:"321",
-          time:"2022-12-05 10:30:10",
-          content:"你好"
-        },
-        { 
-          fromId:"321",
-          toId:"123",
-          time:"2022-12-05 10:30:12",
-          content:"再见"
-        }
-      ],
+      chatContent:[],
       fromId:"123",
-      toId:"321",
+      toId:"",
       loading: false,
       textarea:''
     }
@@ -76,10 +63,9 @@ export default ({
 
   mounted(){
     //5s轮询一次内容
-    console.log(' hello:>> ');
     this.timer=setInterval(()=>{
       this.load();
-    },5000);
+    },3000);
     //挂在切换事件，使得聊天框可以复用而只改变内容
     this.$bus.$on('changeTalker',this.changeTalker);
   },  
@@ -103,19 +89,57 @@ export default ({
 
     //在chatMain中改变人物之后，改变ChatContent，toId复用聊天框
     changeTalker(changeTalker){
-      this.chatContent=changeTalker.chatContent,
-      this.toId=changeTalker.toId
+      //将这次得到的信息反传递给父组件，以免多次请求
+      this.$bus.$emit("backInfo",this.toId,this.chatContent)
+
+      this.toId=changeTalker.toId;
+      this.chatContent=changeTalker.content;
     },
 
     load () {
-      let time=this.chatContent[this.chatContent.length-1].time;
-      this.$axios({
-        method:'get',
-        dataType : 'text',
-        url:config_url+`/chat/${this.fromId}/${this.toId}/${time}`
-      }).then((res)=>{
-        this.chatContent=this.chatContent.concat(res.data.data)
-      })
+      //暂时还没有聊天，不执行操作
+      if(this.toId=='')
+      return
+      //只读取最后一条消息时间之后的消息
+      if(this.chatContent.length!=0){
+        let time=this.chatContent[this.chatContent.length-1].time;
+        this.$axios({
+          method:'get',
+          dataType : 'text',
+          url:config_url+`/chat/${this.fromId}/${this.toId}/${time}`
+        }).then((res)=>{
+          let temp=res.data.data;
+          temp.sort((a,b)=>{
+            if(a.time<b.time)
+            return -1;
+            else if(a.time>b.time)
+            return 1;
+            else
+            return 0;
+          })
+          this.chatContent=this.chatContent.concat(temp)
+        })
+      }
+      //如果什么消息也没有：
+      else{
+        this.$axios({
+          method:'get',
+          dataType : 'text',
+          url:config_url+`/chat/${this.fromId}/${this.toId}`
+        }).then((res)=>{
+          let temp=res.data.data;
+          temp.sort((a,b)=>{
+            if(a.time<b.time)
+            return -1;
+            else if(a.time>b.time)
+            return 1;
+            else
+            return 0;
+          })
+          this.chatContent=this.chatContent.concat(temp)
+        })
+      }
+      
     },
     //发送对话
     send(){
