@@ -6,11 +6,10 @@
         <div class="infinite-list-wrapper" style="overflow:auto">
           <ul
             class="list"
-            v-infinite-scroll="load"
             infinite-scroll-disabled="disabled">
             <!-- eslint-disable vue/require-v-for-key -->
             <li v-for="(item) in chatContent" :key="item.time" class="list-item">
-              <div :class="item.from==from?'myContent':'hisContent'">
+              <div :class="item.fromId==fromId?'myContent':'hisContent'">
                 <div class="contentTime">
                   {{item.time}}
                 </div>
@@ -38,26 +37,29 @@
 
 <script>
 var moment = require('moment');
+import config from '../assets/config';
+var config_url=config.url;
 export default ({
   name:"chatWindow",
   data(){
     return {
+      timer:null,    //定时器
       chatContent:[
         {
-          from:"123",
-          to:"321",
-          time:"2022-12-5 10:30:10",
+          fromId:"123",
+          toId:"321",
+          time:"2022-12-05 10:30:10",
           content:"你好"
         },
         { 
-          from:"321",
-          to:"123",
-          time:"2022-12-5 10:30:12",
+          fromId:"321",
+          toId:"123",
+          time:"2022-12-05 10:30:12",
           content:"再见"
         }
       ],
-      from:"123",
-      to:"321",
+      fromId:"123",
+      toId:"321",
       loading: false,
       textarea:''
     }
@@ -71,32 +73,77 @@ export default ({
       }
 
     },
+
+  mounted(){
+    //5s轮询一次内容
+    console.log(' hello:>> ');
+    this.timer=setInterval(()=>{
+      this.load();
+    },5000);
+    //挂在切换事件，使得聊天框可以复用而只改变内容
+    this.$bus.$on('changeTalker',this.changeTalker);
+  },  
+  beforeDestroy(){
+    //解除事件
+    this.$bus.$off('changeTalker');
+    //销毁定时器
+    this.clearInterval(this.timer)
+  },
+
   methods: {
     //新建一个消息
     newMessage(){
-      console.log('object :>> ');
       return {
-        from:this.from,
-        to:this.to,
+        fromId:this.fromId,
+        toId:this.toId,
         content:this.textarea,
-        time:new moment().format("yyyy-MM-DD hh:mm:ss")
+        time:new moment().format("yyyy-MM-DD HH:mm:ss")
       }
     },
 
-    load () {
-      this.loading = true
-      setTimeout(() => {
-        this.count += 2
-        this.loading = false
-      }, 2000)
+    //在chatMain中改变人物之后，改变ChatContent，toId复用聊天框
+    changeTalker(changeTalker){
+      this.chatContent=changeTalker.chatContent,
+      this.toId=changeTalker.toId
     },
+
+    load () {
+      let time=this.chatContent[this.chatContent.length-1].time;
+      this.$axios({
+        method:'get',
+        dataType : 'text',
+        url:config_url+`/chat/${this.fromId}/${this.toId}/${time}`
+      }).then((res)=>{
+        this.chatContent=this.chatContent.concat(res.data.data)
+      })
+    },
+    //发送对话
     send(){
-      this.$message({
+      let msg=this.newMessage();
+      if(msg.content.length>255){
+        this.$message({
+          message: "发送失败，请发送小于255个字的内容",
+          type: 'warning'
+        });
+      }else{
+        this.textarea='';
+        this.$axios({
+        method:'post',
+        url:config_url+'/chat',
+        data:msg
+      }).then(()=>{
+        this.$message({
           message: "发送成功",
           type: 'success'
-      });
-      this.chatContent.push(this.newMessage());
-      this.textarea=''
+        });
+        this.chatContent.push(msg);
+      }).catch(()=>{
+        this.$message({
+          message: "发送失败，请检查网络是否畅通",
+          type: 'warning'
+        });
+      })
+      }      
     }
   }
 })
@@ -129,22 +176,22 @@ export default ({
   }
   /* 聊天内容 */  
 
-  .myContent > .innerContent{
+  .hisContent > .innerContent{
     font-size: 20px;
     display: inline-block;
     padding: 10px;
     border-radius: 10px 10px 10px 10px ;
     margin-left: 10px;
-    background-color: rgb(137,217,97);
+    background-color: white;
     float: left;
   }
-  .hisContent > .innerContent{
+  .myContent > .innerContent{
     font-size: 20px;
     display: inline-block;
     padding: 10px;
     border-radius: 10px 10px 10px 10px;
     margin-right: 10px;
-    background-color: rgb(255,255,255);
+    background-color: rgb(137,217,97);
     float: right;
   }
 

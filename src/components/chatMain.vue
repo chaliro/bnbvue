@@ -1,6 +1,7 @@
 <template>
   <div>
     <div class="left">
+      <button @click="send">some</button>
     </div>
     <div class="main">
         <chatWindowVue></chatWindowVue>
@@ -15,6 +16,11 @@ export default {
     name:'chatMain',
     components:{
         chatWindowVue
+    },
+    methods:{
+      send(){
+        this.$bus.$emit('changeTalker','lalalalalal')
+      }
     }
 }
 </script>
