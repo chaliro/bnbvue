@@ -50,8 +50,8 @@
             <el-menu-item-group>
               <el-menu-item index="3-1" @click="showOwnerInfo">个人中心</el-menu-item>
               <el-menu-item index="3-2" @click="showOwnerHomestay">我的房源</el-menu-item>
+              <el-menu-item index="3-4" @click="showChatWindow">我的消息</el-menu-item>
               <el-menu-item index="3-3" @click="showOwnerProducts">我的农产品</el-menu-item>
-              <el-menu-item index="3-4">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="4">
@@ -120,6 +120,8 @@
         </el-header>
 <!-- 主页面 -->
         <el-main v-loading="loading">
+          <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
+
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
 
@@ -339,10 +341,11 @@
 
 import axios from 'axios';
 import config from './assets/config'
+import chatMainVue from './components/chatMain.vue';
 var config_url = config.url;
 export default {
   name: 'App',
-  components: {},
+  components: {chatMainVue},
   methods: {
     //显示民宿管理 房源信息界面
     showHomestayInfo() {
@@ -364,7 +367,6 @@ export default {
 
 
     },
-    //控制民宿管理 房源信息界面 的订购
     orderHomestay() {
       this.order = true
     },
@@ -389,9 +391,6 @@ export default {
         .catch(function (error) {// 请求失败
           console.log(error);
         });
-      
-
-
     },
     //控制房东 个人中心 的修改弹出框
     modifyOwnerInfo() {
@@ -695,7 +694,28 @@ export default {
         username:"",
         password:""
       },
-      //房东个人中心的数据
+      allOwnerInfo:[],
+      ownerHomestayCheckByNameVar:null,
+      getAllByNameVar:null,
+   
+      state: {
+        show_homestay_state: false,
+        show_ownerInfo_state: false,
+        show_ownerHomestay_state:false,
+        show_allOwnerInfo_state:false,
+        show_ownerProducts_state:false
+      },
+      ownerId:1,
+      homestayId:0,
+      homeId:2,
+      ownerAddHomestay:false,
+      formLabelWidth: "120px",
+      showDetailHomestayInfo: false,
+      change_ownerInfo: false,
+      addOwner:false,
+      order: false,
+      loading: true,
+      addProducts:false,
       ownerInfo: {
         id: "1",
         name: "chaliro",
