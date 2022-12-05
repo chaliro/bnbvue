@@ -47,8 +47,8 @@
             <el-menu-item-group>
               <el-menu-item index="3-1" @click="showOwnerInfo">个人中心</el-menu-item>
               <el-menu-item index="3-2" @click="showOwnerHomestay">我的房源</el-menu-item>
-              <el-menu-item index="3-3">我的农产品</el-menu-item>
               <el-menu-item index="3-4" @click="showChatWindow">我的消息</el-menu-item>
+              <el-menu-item index="3-3" @click="showOwnerProducts">我的农产品</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="4">
@@ -85,24 +85,20 @@
           <el-input
     placeholder="请输入名字"
     suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
+    v-model="getAllByNameVar">
   </el-input>
-  <el-input
-    placeholder="请输入内容"
+  
+  <el-button @click="getAllByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
+    查询</el-button>
+  </div>
+  <div style="width: 1000px" v-if="state.show_ownerHomestay_state">
+          <el-input
+    placeholder="请输入名字"
     suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
+    v-model="ownerHomestayCheckByNameVar">
   </el-input>
-  <el-input
-    placeholder="请输入内容"
-    suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
-  </el-input>
-  <el-input
-    placeholder="请输入内容"
-    suffix-icon="el-icon-date"  style="width:200px; float:left"
-    v-model="input1">
-  </el-input>
-  <el-button type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
+  
+  <el-button @click="ownerHomestayCheckByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
   </div>
           <el-dropdown>
@@ -183,8 +179,7 @@
 </el-table-column>
 <el-table-column prop="location" label="地址">
 </el-table-column>
-<el-table-column prop="state"  width="100">
-</el-table-column>
+
 <el-table-column  width="100" >
   <template slot-scope="id">
     <el-button type="primary" @click="changeHomestay(id.row.id)">修改</el-button>
@@ -277,6 +272,54 @@
     <el-button type="primary" @click="submitAddOwner">确 定</el-button>
   </div>
           </el-dialog>
+         
+          <!-- 显示房东农产品 -->
+          <el-table v-if="state.show_ownerProducts_state" :data="ownerProducts" >
+           
+
+           <el-table-column prop="name" label="名字" width="120" >
+           </el-table-column>
+           
+           <el-table-column prop="countNow" label="剩余" width="120">
+           </el-table-column>
+           <el-table-column prop="description" label="描述" width="120">
+           </el-table-column>
+           <el-table-column  width="100" >
+             <template slot-scope="id">
+               <el-button type="primary" @click="changeHomestay(id.row.id)">修改</el-button>
+             </template>
+             
+           </el-table-column>
+           <el-table-column  width="100" >
+             <template slot-scope="id">
+               <el-button type="danger"  @click="deleteHomestay(id.row.id)">删除</el-button>
+             </template>
+             
+           </el-table-column>
+           
+                     </el-table>
+            <!-- 产品添加界面 -->
+            <el-button type="primary" v-if="state.show_ownerProducts_state" @click="addNewProducts">添加</el-button>
+            <el-dialog title="产品信息" :visible.sync="addProducts">
+  <el-form :model="productsObj">
+    <el-form-item label="名字" :label-width="10">
+      <el-input v-model="productsObj.name" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+    <el-form-item label="数量" :label-width="10">
+      <el-input v-model="productsObj.countTotal" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+    <el-form-item label="描述" :label-width="10">
+      <el-input v-model="productsObj.description" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+    <el-form-item label="图片路径" :label-width="10">
+      <el-input v-model="productsObj.img" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="addProducts = false">取 消</el-button>
+    <el-button type="primary" @click="submitAddProducts">确 定</el-button>
+  </div>
+          </el-dialog>
         </el-main>
       </el-container>
 
@@ -358,7 +401,7 @@ export default {
     showOwnerHomestay(){
       var _this = this
       _this.loading = true
-      axios.get(config_url+'/homestay', {
+      axios.get(config_url+'/homestay/getByOwnerId/'+ _this.ownerId, {
       })
         .then(function (response) {// 请求成功
           _this.ownerHomestay = response.data.data
@@ -387,7 +430,9 @@ export default {
     },
     submitAddHomestay(){
       var _this = this
-      _this.ownerHomestayObj.id = _this.ownerId
+      if(_this.ownerHomestayObj.id == null || _this.ownerHomestayObj.id=="")
+      {
+        _this.ownerHomestayObj.id = _this.ownerId
       console.log(this.ownerHomestayObj)
       axios.post( config_url+'/owner/addhomestay', _this.ownerHomestayObj
       )
@@ -403,7 +448,21 @@ export default {
           _this.ownerAddHomestay = false
           _this.showOwnerHomestay()
         });
-     
+      }
+      else{
+        axios.post( config_url+'/owner/updatehomestay', _this.ownerHomestayObj
+      )
+        .then(function (response) {// 请求成功
+          console.log(response)
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        })
+        .finally(function(){
+          _this.ownerAddHomestay = false
+          _this.showOwnerHomestay()
+        });
+      } 
     },
     changeHomestay(e){
       var _this = this
@@ -511,6 +570,78 @@ export default {
           _this.showOwnerInfo()
           _this.addOwner = false
         });
+    },
+    ownerHomestayCheckByName(){
+      console.log(this.ownerHomestayCheckByNameVar)
+      var _this = this
+      axios.get( config_url+'/homestay/getByOwnerId/'+_this.ownerId+"/"+_this.ownerHomestayCheckByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.ownerHomestay=response.data.data
+         
+     
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+    },
+    getAllByName(){
+      var _this = this
+      axios.get( config_url+'/homestay/getAllByName/'+_this.getAllByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.homestayInfo=response.data.data
+     
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+    },
+    showOwnerProducts(){
+      var _this = this
+      _this.loading = true
+      axios.get( config_url+'/product', {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.ownerProducts=response.data.data
+          _this.state={
+            show_ownerProducts_state:true
+          }
+          _this.loading = false
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+    },
+    addNewProducts(){
+      this.addProducts = true
+      this.productsObj={
+        id:"",
+        name:"",
+        description:"",
+        countNow:"",
+        countTotal:"",
+        img:""
+      }
+    },
+    submitAddProducts(){
+      var _this = this
+      _this.productsObj.id = _this.homeId
+      axios.post( config_url+'/product/addProducts', _this.productsObj)
+        .then(function (response) {// 请求成功
+          console.log(response)
+         
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        })
+        .finally(function(){
+          _this.showOwnerProducts()
+          _this.addProducts = false
+        });
     }
 
   },
@@ -521,6 +652,7 @@ export default {
       ],
       ownerHomestay:[
       ],
+      ownerProducts:[],
       ownerHomestayObj:{
         id:"",
         name:"",
@@ -540,17 +672,20 @@ export default {
         password:""
       },
       allOwnerInfo:[],
-      
+      ownerHomestayCheckByNameVar:null,
+      getAllByNameVar:null,
    
       state: {
         show_homestay_state: false,
         show_ownerInfo_state: false,
         show_ownerHomestay_state:false,
         show_allOwnerInfo_state:false,
-        show_chat_window_state:false
+        show_chat_window_state:false,
+        show_ownerProducts_state:false,
       },
       ownerId:1,
       homestayId:0,
+      homeId:2,
       ownerAddHomestay:false,
       formLabelWidth: "120px",
       showDetailHomestayInfo: false,
@@ -558,6 +693,7 @@ export default {
       addOwner:false,
       order: false,
       loading: true,
+      addProducts:false,
       ownerInfo: {
         id: "1",
         name: "chaliro",
@@ -566,6 +702,14 @@ export default {
         username: "zzz",
         password: "123456"
 
+      },
+      productsObj:{
+        id:"",
+        name:"",
+        description:"",
+        countNow:"",
+        countTotal:"",
+        img:""
       }
     }
   }
