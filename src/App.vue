@@ -694,37 +694,6 @@ export default {
         username:"",
         password:""
       },
-      allOwnerInfo:[],
-      ownerHomestayCheckByNameVar:null,
-      getAllByNameVar:null,
-   
-      state: {
-        show_homestay_state: false,
-        show_ownerInfo_state: false,
-        show_ownerHomestay_state:false,
-        show_allOwnerInfo_state:false,
-        show_ownerProducts_state:false
-      },
-      ownerId:1,
-      homestayId:0,
-      homeId:2,
-      ownerAddHomestay:false,
-      formLabelWidth: "120px",
-      showDetailHomestayInfo: false,
-      change_ownerInfo: false,
-      addOwner:false,
-      order: false,
-      loading: true,
-      addProducts:false,
-      ownerInfo: {
-        id: "1",
-        name: "chaliro",
-        phone: "10086",
-        email: "123@qq.com",
-        username: "zzz",
-        password: "123456"
-
-      },
       //房东 产品对象
       productsObj:{
         id:"",
