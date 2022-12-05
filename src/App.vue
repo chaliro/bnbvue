@@ -48,7 +48,7 @@
               <el-menu-item index="3-1" @click="showOwnerInfo">个人中心</el-menu-item>
               <el-menu-item index="3-2" @click="showOwnerHomestay">我的房源</el-menu-item>
               <el-menu-item index="3-3">我的农产品</el-menu-item>
-              <el-menu-item index="3-4">我的消息</el-menu-item>
+              <el-menu-item index="3-4" @click="showChatWindow">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="4">
@@ -117,6 +117,8 @@
         </el-header>
 
         <el-main v-loading="loading">
+          <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
+
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
 
@@ -288,10 +290,11 @@
 
 import axios from 'axios';
 import config from './assets/config'
+import chatMainVue from './components/chatMain.vue';
 var config_url = config.url;
 export default {
   name: 'App',
-  components: {},
+  components: {chatMainVue},
   methods: {
     showHomestayInfo() {
       var _this = this
@@ -312,6 +315,13 @@ export default {
 
 
     },
+
+    showChatWindow(){
+      this.state = {
+        show_chat_window_state: true
+      }
+    },
+
     orderHomestay() {
       this.order = true
 
@@ -336,9 +346,6 @@ export default {
         .catch(function (error) {// 请求失败
           console.log(error);
         });
-      
-
-
     },
     modifyOwnerInfo() {
      
@@ -539,7 +546,8 @@ export default {
         show_homestay_state: false,
         show_ownerInfo_state: false,
         show_ownerHomestay_state:false,
-        show_allOwnerInfo_state:false
+        show_allOwnerInfo_state:false,
+        show_chat_window_state:false
       },
       ownerId:1,
       homestayId:0,
