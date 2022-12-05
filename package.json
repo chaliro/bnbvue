@@ -13,7 +13,8 @@
     "element-ui": "^2.15.12",
     "less-loader": "^11.1.0",
     "moment": "^2.29.4",
-    "vue": "^2.6.14"
+    "vue": "^2.6.14",
+    "vue-print-nb": "^1.7.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

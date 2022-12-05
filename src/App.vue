@@ -107,19 +107,40 @@
   <el-button @click="ownerHomestayCheckByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
   </div>
+  <!-- 后台管理 房东界面 搜索框 -->
+  <div style="width: 1000px" v-if="state.show_allOwnerInfo_state">
+          <el-input
+    placeholder="请输入名字"
+    suffix-icon="el-icon-date"  style="width:200px; float:left"
+    v-model="checkOwnerByNameVar">
+  </el-input>
+  
+  <el-button @click="checkOwnerByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
+    查询</el-button>
+  </div>
+  <!-- 房东管理 产品界面 搜索框 -->
+  <div style="width: 1000px" v-if="state.show_ownerProducts_state">
+          <el-input
+    placeholder="请输入名字"
+    suffix-icon="el-icon-date"  style="width:200px; float:left"
+    v-model="checkOwnerProductByNameVar">
+  </el-input>
+  
+  <el-button @click="checkOwnerProductByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
+    查询</el-button>
+  </div>
   <!-- 界面右上角的小齿轮（导出打印统计） 和 用户名 -->
           <el-dropdown>
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item>导出</el-dropdown-item>
-              <el-dropdown-item>打印</el-dropdown-item>
+              <el-dropdown-item  v-print="printObj">导出</el-dropdown-item>
               <el-dropdown-item>统计</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <span>{{ userName }}</span>
         </el-header>
 <!-- 主页面 -->
-        <el-main v-loading="loading">
+        <el-main v-loading="loading" id="printMe">
           <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
 
           <!-- 显示民宿信息 -->
@@ -201,7 +222,7 @@
 </el-table-column>
 
           </el-table>
-          <el-button type="primary" v-if="state.show_ownerHomestay_state" @click="addHomestay">添加</el-button>
+         
           <!--  房东房源添加界面 -->
           <el-dialog title="民宿信息" :visible.sync="ownerAddHomestay">
   <el-form :model="ownerHomestayObj">
@@ -238,7 +259,7 @@
 </el-table-column>
 <el-table-column prop="phone" label="电话号码" width="120">
 </el-table-column>
-<el-table-column prop="email" label="邮箱" width="240">
+<el-table-column prop="email" label="邮箱" width="360">
 </el-table-column>
 <el-table-column  width="100" >
   <template slot-scope="id">
@@ -254,7 +275,7 @@
 
 </el-table>
 <!-- 后台管理 添加房东界面 -->
-<el-button type="primary" v-if="state.show_allOwnerInfo_state" @click="addOwnerInfo">添加</el-button>
+
           <!-- 添加房东界面 -->
           <el-dialog title="房东信息" :visible.sync="addOwner">
   <el-form :model="ownerInfoObj">
@@ -283,37 +304,44 @@
          
           <!-- 房东管理 显示房东农产品 -->
           <el-table v-if="state.show_ownerProducts_state" :data="ownerProducts" >
-           
-
            <el-table-column prop="name" label="名字" width="120" >
            </el-table-column>
            
            <el-table-column prop="countNow" label="剩余" width="120">
            </el-table-column>
-           <el-table-column prop="description" label="描述" width="120">
+           <el-table-column prop="description" label="描述" width="500">
            </el-table-column>
            <el-table-column  width="100" >
              <template slot-scope="id">
-               <el-button type="primary" @click="changeHomestay(id.row.id)">修改</el-button>
+               <el-button type="primary" @click="changeProducts(id.row.id)">修改</el-button>
              </template>
              
            </el-table-column>
            <el-table-column  width="100" >
              <template slot-scope="id">
-               <el-button type="danger"  @click="deleteHomestay(id.row.id)">删除</el-button>
+               <el-button type="danger"  @click="deleteProducts(id.row.id)">删除</el-button>
              </template>
              
            </el-table-column>
            
                      </el-table>
             <!-- 产品添加界面 -->
-            <el-button type="primary" v-if="state.show_ownerProducts_state" @click="addNewProducts">添加</el-button>
+         
             <el-dialog title="产品信息" :visible.sync="addProducts">
+              <el-select v-model="homeId"  placeholder="请选择应的房源" v-if="(productsObj.id==null || productsObj.id=='')">
+    <el-option
+      v-for="item in ownerHomestay"
+      :key="item.name"
+      :label="item.name"
+      :value="item.id">
+    </el-option>
+  </el-select>
+
   <el-form :model="productsObj">
     <el-form-item label="名字" :label-width="10">
       <el-input v-model="productsObj.name" autocomplete="off" :width="100"></el-input>
     </el-form-item>
-    <el-form-item label="数量" :label-width="10">
+    <el-form-item label="总数" :label-width="10">
       <el-input v-model="productsObj.countTotal" autocomplete="off" :width="100"></el-input>
     </el-form-item>
     <el-form-item label="描述" :label-width="10">
@@ -329,6 +357,9 @@
   </div>
           </el-dialog>
         </el-main>
+        <el-button type="primary" v-if="state.show_ownerHomestay_state" @click="addHomestay">添加</el-button>
+        <el-button type="primary" v-if="state.show_allOwnerInfo_state" @click="addOwnerInfo">添加</el-button>
+        <el-button type="primary" v-if="state.show_ownerProducts_state" @click="addNewProducts">添加</el-button>
       </el-container>
 
     </el-container>
@@ -378,7 +409,7 @@ export default {
     showOwnerInfo() {
       var _this = this
       _this.loading = true
-      axios.get(config_url+'/owner/'+_yhis.ownerId, {
+      axios.get(config_url+'/owner/'+_this.ownerId, {
       })
         .then(function (response) {// 请求成功
           console.log(response)
@@ -642,10 +673,22 @@ export default {
         countTotal:"",
         img:""
       }
+      var _this = this
+      axios.get(config_url+'/homestay/getByOwnerId/'+ _this.ownerId, {
+      })
+        .then(function (response) {// 请求成功
+          _this.ownerHomestay = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
     },
     //显示 房东管理 房源信息 添加或者修改的确定按钮提交信息
     submitAddProducts(){
+      console.log(this.homeId)
       var _this = this
+      if(this.productsObj.id == null || this.productsObj.id ==''){
+      
       _this.productsObj.id = _this.homeId
       axios.post( config_url+'/product/addProducts', _this.productsObj)
         .then(function (response) {// 请求成功
@@ -658,6 +701,82 @@ export default {
         .finally(function(){
           _this.showOwnerProducts()
           _this.addProducts = false
+        });
+      }
+      else{
+        axios.post( config_url+'/product/updateProducts', _this.productsObj)
+        .then(function (response) {// 请求成功
+          console.log(response)
+         
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        })
+        .finally(function(){
+          _this.addProducts = false
+          _this.showOwnerProducts()
+        });
+      }
+    },
+    //后台管理 房东页面 搜索框
+    checkOwnerByName(){
+      var _this = this
+      axios.get( config_url+'/owner/getByName/'+_this.checkOwnerByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.allOwnerInfo=response.data.data
+     
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+    },
+    //房东管理 房源信息 修改产品界面
+    changeProducts(e){
+      var _this = this
+
+      console.log(e)
+      axios.get( config_url+'/product/'+e, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.productsObj = response.data.data
+          _this.addProducts = true
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+    },
+    //房东管理 产品信息 删除产品
+    deleteProducts(e){
+      var _this = this
+
+console.log(e)
+axios.delete( config_url+'/product/'+e, {
+})
+  .then(function (response) {// 请求成功
+    console.log(response)
+  })
+  .catch(function (error) {// 请求失败
+    console.log(error);
+  })
+  .finally(function(){
+    _this.showOwnerProducts()
+  });
+    },
+    //房东管理 产品信息 搜索
+    checkOwnerProductByName(){
+      var _this = this
+      axios.get( config_url+'/product/getByName/'+_this.checkOwnerProductByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.ownerProducts=response.data.data
+     
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
         });
     }
 
@@ -709,6 +828,10 @@ export default {
       ownerHomestayCheckByNameVar:null,
       //用来存放 民宿管理房源信息搜素框的信息
       getAllByNameVar:null,
+      //用于存放 后台管理房东信息搜索框的信息
+      checkOwnerByNameVar:null,
+     //用于存放 房东管理产品信息搜索框的信息 
+      checkOwnerProductByNameVar:null,
    //控制页面跳转
       state: {
         //显示民宿管理 房源信息
@@ -725,7 +848,7 @@ export default {
       //房东Id
       ownerId:1,
       //民宿iD 用于添加产品时指定民宿
-      homeId:2,
+      homeId:null,
       //控制房东添加或者修改房源的弹出框
       ownerAddHomestay:false,
     //用来控制后台添加或者修改房东的弹出框
@@ -735,7 +858,13 @@ export default {
       //用来表示 页面加载时的动画
       loading: true,
       //用来控制房东添加或者修改产品的弹出框
-      addProducts:false
+      addProducts:false,
+      //表示添加产品时对应的房源名字
+      homeName:"",
+      //导出 打印
+      printObj: {
+        id: 'printMe',
+      },
     }
   }
 
