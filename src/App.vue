@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <!-- 按钮样式 -->
     <!-- <el-row>
       <el-button>默认按钮</el-button>
       <el-button type="primary">主要按钮</el-button>
@@ -11,6 +12,8 @@
 
 
     <el-container style="height: 660px; border: 1px solid #eee">
+
+      <!-- 导航栏 -->
       <el-aside width="200px" style="background-color: #545c64">
 
         <!-- <el-col :span="5"> -->
@@ -80,7 +83,9 @@
       </el-aside>
 
       <el-container>
+        <!-- 顶部信息 -->
         <el-header style="text-align: right; font-size: 12px">
+          <!-- 民宿管理 房源界面 的 搜索框 -->
           <div style="width: 1000px" v-if="state.show_homestay_state">
           <el-input
     placeholder="请输入名字"
@@ -91,6 +96,7 @@
   <el-button @click="getAllByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
   </div>
+  <!-- 房东管理 房源界面 搜索框 -->
   <div style="width: 1000px" v-if="state.show_ownerHomestay_state">
           <el-input
     placeholder="请输入名字"
@@ -101,6 +107,7 @@
   <el-button @click="ownerHomestayCheckByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
   </div>
+  <!-- 界面右上角的小齿轮（导出打印统计） 和 用户名 -->
           <el-dropdown>
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
@@ -111,7 +118,7 @@
           </el-dropdown>
           <span>{{ userName }}</span>
         </el-header>
-
+<!-- 主页面 -->
         <el-main v-loading="loading">
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
@@ -193,7 +200,7 @@
 
           </el-table>
           <el-button type="primary" v-if="state.show_ownerHomestay_state" @click="addHomestay">添加</el-button>
-          <!-- 房源添加界面 -->
+          <!--  房东房源添加界面 -->
           <el-dialog title="民宿信息" :visible.sync="ownerAddHomestay">
   <el-form :model="ownerHomestayObj">
     <el-form-item label="民宿名称" :label-width="10">
@@ -220,6 +227,7 @@
     <el-button type="primary" @click="submitAddHomestay">确 定</el-button>
   </div>
           </el-dialog>
+          <!-- 显示后台管理 房东信息 -->
           <el-table v-if="state.show_allOwnerInfo_state" :data="allOwnerInfo">
 
 <el-table-column prop="name" label="名字" width="120">
@@ -243,9 +251,9 @@
 
 
 </el-table>
-<!-- 添加房东界面 -->
+<!-- 后台管理 添加房东界面 -->
 <el-button type="primary" v-if="state.show_allOwnerInfo_state" @click="addOwnerInfo">添加</el-button>
-          <!-- 添加房源界面 -->
+          <!-- 添加房东界面 -->
           <el-dialog title="房东信息" :visible.sync="addOwner">
   <el-form :model="ownerInfoObj">
     <el-form-item label="姓名" :label-width="10">
@@ -271,7 +279,7 @@
   </div>
           </el-dialog>
          
-          <!-- 显示房东农产品 -->
+          <!-- 房东管理 显示房东农产品 -->
           <el-table v-if="state.show_ownerProducts_state" :data="ownerProducts" >
            
 
@@ -336,6 +344,7 @@ export default {
   name: 'App',
   components: {},
   methods: {
+    //显示民宿管理 房源信息界面
     showHomestayInfo() {
       var _this = this
       _this.loading = true
@@ -355,18 +364,19 @@ export default {
 
 
     },
+    //控制民宿管理 房源信息界面 的订购
     orderHomestay() {
       this.order = true
-
     },
+//控制民宿管理 房源信息界面 的取消订购
     unOrderHomestay() {
       this.order = false
-
     },
+    //显示房东 个人中心
     showOwnerInfo() {
       var _this = this
       _this.loading = true
-      axios.get(config_url+'/owner/1', {
+      axios.get(config_url+'/owner/'+_yhis.ownerId, {
       })
         .then(function (response) {// 请求成功
           console.log(response)
@@ -383,6 +393,7 @@ export default {
 
 
     },
+    //控制房东 个人中心 的修改弹出框
     modifyOwnerInfo() {
      
       this.addOwner=true
@@ -390,7 +401,7 @@ export default {
 
    
     },
-    
+    //显示房东管理 房源信息界面
     showOwnerHomestay(){
       var _this = this
       _this.loading = true
@@ -408,6 +419,7 @@ export default {
           console.log(error);
         });
     },
+    //控制房东管理 房源信息 添加界面
     addHomestay(){
       this.ownerAddHomestay = true
       this.ownerHomestayObj={
@@ -421,6 +433,7 @@ export default {
         description:""
       }
     },
+    //控制房东管理 房源信息 添加或者修改的确定按钮提交信息
     submitAddHomestay(){
       var _this = this
       if(_this.ownerHomestayObj.id == null || _this.ownerHomestayObj.id=="")
@@ -457,6 +470,7 @@ export default {
         });
       } 
     },
+    //控制房东管理 房源信息 修改界面
     changeHomestay(e){
       var _this = this
       console.log(e)
@@ -471,6 +485,7 @@ export default {
           console.log(error);
         });
     },
+    //控制房东管理 房源信息 删除功能
     deleteHomestay(e){
       var _this = this;
       axios.delete( config_url+'/homestay/'+e, {
@@ -487,6 +502,7 @@ export default {
           _this.showOwnerHomestay()
         });
     },
+    //显示后台管理 房东信息
     showAllOwnerInfo(){
       var _this = this;
       _this.loading = true
@@ -504,6 +520,7 @@ export default {
           console.log(error);
         });
     },
+     //显示后台管理 房东信息 修改界面
     changeOwnerInfo(e){
       var _this = this
       console.log(e)
@@ -519,6 +536,7 @@ export default {
         });
       
     },
+    //显示后台管理 房东信息 删除功能
     deleteOwnerInfo(e){
       var _this = this
       axios.delete( config_url+'/owner/'+e, {
@@ -532,6 +550,7 @@ export default {
           console.log(error);
         });
     },
+    //显示后台管理 房东信息 添加界面
     addOwnerInfo(){
       this.addOwner = true
       this.ownerInfoObj={
@@ -543,6 +562,7 @@ export default {
         password:""
       }
     },
+    //显示后台管理 房东信息 添加或者修改的确定按钮提交信息
     submitAddOwner(){
       var _this = this
       
@@ -564,6 +584,7 @@ export default {
           _this.addOwner = false
         });
     },
+    //房东管理 房源信息 查询按钮
     ownerHomestayCheckByName(){
       console.log(this.ownerHomestayCheckByNameVar)
       var _this = this
@@ -579,6 +600,7 @@ export default {
           console.log(error);
         });
     },
+    //民宿管理 房源信息 查询按钮
     getAllByName(){
       var _this = this
       axios.get( config_url+'/homestay/getAllByName/'+_this.getAllByNameVar, {
@@ -592,6 +614,7 @@ export default {
           console.log(error);
         });
     },
+    //显示 房东管理 房源信息 产品界面
     showOwnerProducts(){
       var _this = this
       _this.loading = true
@@ -609,6 +632,7 @@ export default {
           console.log(error);
         });
     },
+    //显示 房东管理 房源信息 添加产品界面
     addNewProducts(){
       this.addProducts = true
       this.productsObj={
@@ -620,6 +644,7 @@ export default {
         img:""
       }
     },
+    //显示 房东管理 房源信息 添加或者修改的确定按钮提交信息
     submitAddProducts(){
       var _this = this
       _this.productsObj.id = _this.homeId
@@ -640,12 +665,17 @@ export default {
   },
   data() {
     return {
+      //存放登录用户的用户名房东房源对象
       userName: "用户名",
+      //房源信息数组
       homestayInfo: [
       ],
+      //房东房源数组
       ownerHomestay:[
       ],
+      //房东产品数组
       ownerProducts:[],
+      //房东房源对象
       ownerHomestayObj:{
         id:"",
         name:"",
@@ -656,6 +686,7 @@ export default {
         state:"",
         description:""
       },
+      //后台管理 添加修改 需要使用的房东信息对象
       ownerInfoObj:{
         id:"",
         name:"",
@@ -664,28 +695,7 @@ export default {
         username:"",
         password:""
       },
-      allOwnerInfo:[],
-      ownerHomestayCheckByNameVar:null,
-      getAllByNameVar:null,
-   
-      state: {
-        show_homestay_state: false,
-        show_ownerInfo_state: false,
-        show_ownerHomestay_state:false,
-        show_allOwnerInfo_state:false,
-        show_ownerProducts_state:false
-      },
-      ownerId:1,
-      homestayId:0,
-      homeId:2,
-      ownerAddHomestay:false,
-      formLabelWidth: "120px",
-      showDetailHomestayInfo: false,
-      change_ownerInfo: false,
-      addOwner:false,
-      order: false,
-      loading: true,
-      addProducts:false,
+      //房东个人中心的数据
       ownerInfo: {
         id: "1",
         name: "chaliro",
@@ -695,6 +705,7 @@ export default {
         password: "123456"
 
       },
+      //房东 产品对象
       productsObj:{
         id:"",
         name:"",
@@ -702,7 +713,40 @@ export default {
         countNow:"",
         countTotal:"",
         img:""
-      }
+      },
+      //后台管理 所有房东信息
+      allOwnerInfo:[],
+      //用来存放 房东房源搜索框的信息
+      ownerHomestayCheckByNameVar:null,
+      //用来存放 民宿管理房源信息搜素框的信息
+      getAllByNameVar:null,
+   //控制页面跳转
+      state: {
+        //显示民宿管理 房源信息
+        show_homestay_state: false,
+        //显示房东管理 个人中心
+        show_ownerInfo_state: false,
+         //显示房东管理 房源信息
+        show_ownerHomestay_state:false,
+         //显示后台管理 房东信息
+        show_allOwnerInfo_state:false,
+         //显示房东管理 产品信息
+        show_ownerProducts_state:false
+      },
+      //房东Id
+      ownerId:1,
+      //民宿iD 用于添加产品时指定民宿
+      homeId:2,
+      //控制房东添加或者修改房源的弹出框
+      ownerAddHomestay:false,
+    //用来控制后台添加或者修改房东的弹出框
+      addOwner:false,
+      //用来控制民宿管理 房源信息 的订购
+      order: false,
+      //用来表示 页面加载时的动画
+      loading: true,
+      //用来控制房东添加或者修改产品的弹出框
+      addProducts:false
     }
   }
 
