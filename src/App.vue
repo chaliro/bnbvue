@@ -70,10 +70,10 @@
           <el-submenu index="5">
             <template slot="title">
               <i class="el-icon-setting"></i>
-              <span>待办事项</span>
+              <span>驾驶舱</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="5">待办事项管理</el-menu-item>
+              <el-menu-item index="5">驾驶舱界面</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -106,6 +106,8 @@
   
   <el-button @click="ownerHomestayCheckByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
+    <el-button @click="ownerHomestayAESCBYname" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">按名字升序</el-button>
+    <el-button @click="ownerHomestayDESCBYname"  type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">按名字降序</el-button>
   </div>
   <!-- 后台管理 房东界面 搜索框 -->
   <div style="width: 1000px" v-if="state.show_allOwnerInfo_state">
@@ -117,6 +119,8 @@
   
   <el-button @click="checkOwnerByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
+    <el-button @click="allOwnerInfoAESCBYname" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">按名字升序</el-button>
+    <el-button @click="allOwnerInfoDESCBYname"  type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">按名字降序</el-button>
   </div>
   <!-- 房东管理 产品界面 搜索框 -->
   <div style="width: 1000px" v-if="state.show_ownerProducts_state">
@@ -128,6 +132,9 @@
   
   <el-button @click="checkOwnerProductByName" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">
     查询</el-button>
+    <el-button @click="ownerProductAESCBYname" type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">按名字升序</el-button>
+    <el-button @click="ownerProductDESCBYname"  type="primary" style="float:left;margin-top: 11px;margin-left: 20px;background-color: white;border:solid 0px;color: rgb(179,192,209);">按名字降序</el-button>
+    
   </div>
   <!-- 界面右上角的小齿轮（导出打印统计） 和 用户名 -->
           <el-dropdown>
@@ -530,6 +537,7 @@ export default {
         })
         .finally(function(){
           _this.showOwnerHomestay()
+          _this.ownerHomestayCheckByNameVar = null
         });
     },
     //显示后台管理 房东信息
@@ -573,11 +581,15 @@ export default {
       })
         .then(function (response) {// 请求成功
           console.log(response)
-          _this.showAllOwnerInfo()
+        
           console.log(_this.showAllOwnerInfo)
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+        })
+        .finally(function(){
+          _this.checkOwnerByNameVar = null
+          _this.showAllOwnerInfo()
         });
     },
     //显示后台管理 房东信息 添加界面
@@ -763,6 +775,7 @@ axios.delete( config_url+'/product/'+e, {
   })
   .finally(function(){
     _this.showOwnerProducts()
+    _this.checkOwnerProductByNameVar = null
   });
     },
     //房东管理 产品信息 搜索
@@ -778,8 +791,174 @@ axios.delete( config_url+'/product/'+e, {
         .catch(function (error) {// 请求失败
           console.log(error);
         });
+    },
+    //后台管理 房东信息 按名字升序
+    allOwnerInfoAESCBYname(){
+      
+      var _this = this;
+      if(_this.checkOwnerByNameVar == null ||_this.checkOwnerByNameVar =='' )
+      {
+        axios.get( config_url+'/owner/aesc', {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.allOwnerInfo = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      else{
+        axios.get( config_url+'/owner/aescbyname/'+_this.checkOwnerByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.allOwnerInfo = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      
+    },
+    //后台管理 房东信息 按名字降序
+    allOwnerInfoDESCBYname(){
+      
+      var _this = this;
+      if(_this.checkOwnerByNameVar == null ||_this.checkOwnerByNameVar =='' )
+      {
+        axios.get( config_url+'/owner/desc', {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.allOwnerInfo = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      else{
+        axios.get( config_url+'/owner/descbyname/'+_this.checkOwnerByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.allOwnerInfo = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      
+    },
+     //房东管理 房源信息 按名字升序
+    ownerHomestayAESCBYname(){
+      var _this = this;
+      if(_this.ownerHomestayCheckByNameVar== null ||_this.ownerHomestayCheckByNameVar =='' )
+      {
+        axios.get( config_url+'/homestay/aesc/'+_this.ownerId, {
+      })
+        .then(function (response) {// 请求成功
+          console.log("============================")
+          console.log(response.data.data)
+         _this.ownerHomestay = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      else{
+        axios.get( config_url+'/homestay/aescbyname/'+_this.ownerHomestayCheckByNameVar+"/"+_this.ownerId, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response.data.data)
+         _this.ownerHomestay = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+    },
+    //房东管理 房源信息 按名字降序
+    ownerHomestayDESCBYname(){
+      var _this = this;
+      if(_this.ownerHomestayCheckByNameVar== null ||_this.ownerHomestayCheckByNameVar =='' )
+      {
+        axios.get( config_url+'/homestay/desc/'+_this.ownerId, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.ownerHomestay = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      else{
+        axios.get( config_url+'/homestay/descbyname/'+_this.ownerHomestayCheckByNameVar+'/'+_this.ownerId, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.ownerHomestay = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+    },
+     //房东管理 产品信息 按名字升序
+    ownerProductAESCBYname(){
+      var _this = this;
+      if(_this.checkOwnerProductByNameVar == null ||_this.checkOwnerProductByNameVar =='' )
+      {
+        axios.get( config_url+'/product/aesc', {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.ownerProducts = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      else{
+        axios.get( config_url+'/product/aescbyname/'+_this.checkOwnerProductByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.ownerProducts = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+    },
+    //房东管理 产品信息 按名字降序
+    ownerProductDESCBYname(){
+      var _this = this;
+      if(_this.checkOwnerProductByNameVar == null ||_this.checkOwnerProductByNameVar =='' )
+      {
+        axios.get( config_url+'/product/desc', {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.ownerProducts = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
+      else{
+        axios.get( config_url+'/product/descbyname/'+_this.checkOwnerProductByNameVar, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+         _this.ownerProducts = response.data.data
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+      }
     }
-
   },
   data() {
     return {
