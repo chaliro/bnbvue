@@ -5,9 +5,13 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import Print from 'vue-print-nb'
 Vue.config.productionTip = false
+Vue.prototype.$axios=axios
 Vue.use(ElementUI);
 Vue.use(Print);
-var vm = new Vue({
+new Vue({
   render: h => h(App),
+  beforeCreate () { 
+    //全局事件总线
+    Vue.prototype.$bus = this
+  },
 }).$mount('#app')
-vm.$axios = axios

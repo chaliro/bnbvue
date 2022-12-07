@@ -405,6 +405,13 @@ export default {
 
 
     },
+    //显示聊天窗
+    showChatWindow(){
+      this.state = {
+        show_chat_window_state: true
+      }
+    },
+
     orderHomestay() {
       this.order = true
     },
@@ -1022,7 +1029,9 @@ axios.delete( config_url+'/product/'+e, {
          //显示后台管理 房东信息
         show_allOwnerInfo_state:false,
          //显示房东管理 产品信息
-        show_ownerProducts_state:false
+        show_ownerProducts_state:false,
+        //显示聊天框
+        show_chat_window_state:false,
       },
       //房东Id
       ownerId:1,
