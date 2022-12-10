@@ -488,11 +488,18 @@ export default {
       )
         .then(function (response) {// 请求成功
           console.log(response)
-          
+          _this.$message({
+            message:"添加成功",
+            type:"success"
+          })
 
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"添加失败",
+            type:"error"
+          })
         })
         .finally(function(){
           _this.ownerAddHomestay = false
@@ -504,9 +511,17 @@ export default {
       )
         .then(function (response) {// 请求成功
           console.log(response)
+          _this.$message({
+            message:"修改成功",
+            type:"success"
+          })
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"修改失败",
+            type:"error"
+          })
         })
         .finally(function(){
           _this.ownerAddHomestay = false
@@ -536,11 +551,18 @@ export default {
       })
         .then(function (response) {// 请求成功
           console.log(response)
-          
+          _this.$message({
+            message:"删除成功",
+            type:"success"
+          })
           console.log(_this.ownerHomestay)
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"删除失败",
+            type:"error"
+          })
         })
         .finally(function(){
           _this.showOwnerHomestay()
@@ -574,10 +596,18 @@ export default {
         .then(function (response) {// 请求成功
           console.log(response)
           _this.ownerInfoObj = response.data.data
+          _this.$message({
+            message:"修改成功",
+            type:"success"
+          })
           _this.addOwner = true
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"修改失败",
+            type:"error"
+          })
         });
       
     },
@@ -588,11 +618,18 @@ export default {
       })
         .then(function (response) {// 请求成功
           console.log(response)
-        
+          _this.$message({
+            message:"删除成功",
+            type:"success"
+          })
           console.log(_this.showAllOwnerInfo)
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"删除失败",
+            type:"error"
+          })
         })
         .finally(function(){
           _this.checkOwnerByNameVar = null
@@ -620,16 +657,27 @@ export default {
       )
         .then(function (response) {// 请求成功
           console.log(response)
-        
+          _this.$message({
+            message:"成功",
+            type:"success"
+          })
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"失败",
+            type:"error"
+          })
         })
         .finally(function(){
-          if(_this.state.show_allOwnerInfo_state ==true)
-          _this.showAllOwnerInfo()
-          if(_this.state.show_ownerInfo_state==true)
-          _this.showOwnerInfo()
+          if(_this.state.show_allOwnerInfo_state ==true){
+            _this.showAllOwnerInfo()
+          }
+         
+          if(_this.state.show_ownerInfo_state==true){
+            _this.showOwnerInfo()
+          }
+          
           _this.addOwner = false
         });
     },
@@ -642,11 +690,18 @@ export default {
         .then(function (response) {// 请求成功
           console.log(response)
           _this.ownerHomestay=response.data.data
-         
+          _this.$message({
+            message:"查询成功",
+            type:"success"
+          })
      
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"查询失败",
+            type:"error"
+          })
         });
     },
     //民宿管理 房源信息 查询按钮
@@ -657,10 +712,18 @@ export default {
         .then(function (response) {// 请求成功
           console.log(response)
           _this.homestayInfo=response.data.data
+          _this.$message({
+            message:"查询成功",
+            type:"success"
+          })
      
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"查询失败",
+            type:"error"
+          })
         });
     },
     //显示 房东管理 房源信息 产品界面
@@ -697,6 +760,7 @@ export default {
       })
         .then(function (response) {// 请求成功
           _this.ownerHomestay = response.data.data
+
         })
         .catch(function (error) {// 请求失败
           console.log(error);
@@ -712,10 +776,17 @@ export default {
       axios.post( config_url+'/product/addProducts', _this.productsObj)
         .then(function (response) {// 请求成功
           console.log(response)
-         
+          _this.$message({
+            message:"添加成功",
+            type:"success"
+          })
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"添加失败",
+            type:"error"
+          })
         })
         .finally(function(){
           _this.showOwnerProducts()
@@ -726,10 +797,18 @@ export default {
         axios.post( config_url+'/product/updateProducts', _this.productsObj)
         .then(function (response) {// 请求成功
           console.log(response)
+          _this.$message({
+            message:"修改成功",
+            type:"success"
+          })
          
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"修改失败",
+            type:"error"
+          })
         })
         .finally(function(){
           _this.addProducts = false
@@ -745,10 +824,18 @@ export default {
         .then(function (response) {// 请求成功
           console.log(response)
           _this.allOwnerInfo=response.data.data
+          _this.$message({
+            message:"查询成功",
+            type:"success"
+          })
      
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"查询失败",
+            type:"error"
+          })
         });
     },
     //房东管理 房源信息 修改产品界面
@@ -776,9 +863,17 @@ axios.delete( config_url+'/product/'+e, {
 })
   .then(function (response) {// 请求成功
     console.log(response)
+    _this.$message({
+            message:"删除成功",
+            type:"success"
+          })
   })
   .catch(function (error) {// 请求失败
     console.log(error);
+    _this.$message({
+            message:"删除失败",
+            type:"error"
+          })
   })
   .finally(function(){
     _this.showOwnerProducts()
@@ -793,10 +888,18 @@ axios.delete( config_url+'/product/'+e, {
         .then(function (response) {// 请求成功
           console.log(response)
           _this.ownerProducts=response.data.data
+          _this.$message({
+            message:"查询成功",
+            type:"success"
+          })
      
         })
         .catch(function (error) {// 请求失败
           console.log(error);
+          _this.$message({
+            message:"查询失败",
+            type:"error"
+          })
         });
     },
     //后台管理 房东信息 按名字升序
@@ -1034,7 +1137,7 @@ axios.delete( config_url+'/product/'+e, {
         show_chat_window_state:false,
       },
       //房东Id
-      ownerId:1,
+      ownerId:26,
       //民宿iD 用于添加产品时指定民宿
       homeId:null,
       //控制房东添加或者修改房源的弹出框
