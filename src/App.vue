@@ -9,9 +9,9 @@
       <el-button type="warning">警告按钮</el-button>
       <el-button type="danger">危险按钮</el-button>
     </el-row> -->
+    <logInVue v-if="(login_state==false)"></logInVue>
 
-
-    <el-container style="height: 660px; border: 1px solid #eee">
+    <el-container v-if="(login_state==true)" style="height: 660px; border: 1px solid #eee">
 
       <!-- 导航栏 -->
       <el-aside width="200px" style="background-color: #545c64">
@@ -380,10 +380,11 @@
 import axios from 'axios';
 import config from './assets/config'
 import chatMainVue from './components/chatMain.vue';
+import logInVue from './components/logIn.vue';
 var config_url = config.url;
 export default {
   name: 'App',
-  components: {chatMainVue},
+  components: {chatMainVue,logInVue},
   methods: {
     //显示民宿管理 房源信息界面
     showHomestayInfo() {
@@ -407,6 +408,10 @@ export default {
     },
     //显示聊天窗
     showChatWindow(){
+      //先等容器创建，再传递参数
+      setTimeout(()=>{
+        this.$bus.$emit("chatWindow",this.ownerId)
+      },500);
       this.state = {
         show_chat_window_state: true
       }
@@ -1072,6 +1077,9 @@ axios.delete( config_url+'/product/'+e, {
   },
   data() {
     return {
+      //登录状态
+      login_state:false,
+
       //存放登录用户的用户名房东房源对象
       userName: "用户名",
       //房源信息数组
@@ -1137,7 +1145,7 @@ axios.delete( config_url+'/product/'+e, {
         show_chat_window_state:false,
       },
       //房东Id
-      ownerId:26,
+      ownerId:null,
       //民宿iD 用于添加产品时指定民宿
       homeId:null,
       //控制房东添加或者修改房源的弹出框
@@ -1157,6 +1165,23 @@ axios.delete( config_url+'/product/'+e, {
         id: 'printMe',
       },
     }
+  },
+  mounted(){
+    //绑定事件，登录组件触发时生效
+    this.$bus.$on("login",(user,usertype)=>{
+      this.login_state=true;
+      //用户登录相关信息从loginIn组件传递
+      //如果是owner登录
+      if(usertype=="owner"){
+        this.ownerId=user.id;
+        this.ownerInfoObj=user;
+      }
+    })
+    
+  },
+  //解绑bus
+  beforeDestroy(){
+    this.$bus.$off("login");
   }
 
 }

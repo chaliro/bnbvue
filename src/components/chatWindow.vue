@@ -45,7 +45,7 @@ export default ({
     return {
       timer:null,    //定时器
       chatContent:[],
-      fromId:"123",
+      fromId:"",
       toId:"",
       loading: false,
       textarea:''
@@ -68,10 +68,16 @@ export default ({
     },3000);
     //挂在切换事件，使得聊天框可以复用而只改变内容
     this.$bus.$on('changeTalker',this.changeTalker);
+    //切换到这个页面的时候，传递用户id
+    this.$bus.$on("chatWindow",(fromId)=>{
+      console.log('id :>> ', fromId.toString());
+      this.fromId=fromId.toString();
+    });
   },  
   beforeDestroy(){
     //解除事件
     this.$bus.$off('changeTalker');
+    this.$bus.$off('chatWindow');
     //销毁定时器
     this.clearInterval(this.timer)
   },
@@ -169,7 +175,7 @@ export default ({
       })
       }      
     }
-  }
+  },
 })
 </script>
 
