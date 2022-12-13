@@ -28,7 +28,7 @@ export default {
 
     data(){
       return {
-        fromId:"123",
+        fromId:"",
         timer:null,
         nowChatting:-1,
         pepolesWithChat:[
@@ -88,6 +88,9 @@ export default {
     mounted(){
       //挂载事件，当切换聊天对象时，将现有聊天框的内容存储下来,10s 轮询一次
       this.$bus.$on("backInfo",this.receiverFormSon);
+      this.$bus.$on("chatWindow",(fromId)=>{
+      this.fromId=fromId.toString();
+    });
       this.timer=setInterval(()=>{
       this.getChatter();
     },10000);
@@ -95,6 +98,7 @@ export default {
     beforeDestroy(){
       //销毁挂载
       this.$bus.$off("backInfo");
+      this.$bus.$off("chatWindow");
     }
 }
 </script>
