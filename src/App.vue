@@ -421,6 +421,7 @@ export default {
     },
     //显示房东 个人中心
     showOwnerInfo() {
+      console.log("xxxxx")
       var _this = this
       _this.loading = true
       axios.get(config_url+'/owner/'+_this.ownerId, {
@@ -1155,6 +1156,14 @@ axios.delete( config_url+'/product/'+e, {
       //导出 打印
       printObj: {
         id: 'printMe',
+      },
+      ownerInfo:{
+        id:"",
+        name:"",
+        phone:"",
+        email:"",
+        username:"",
+        password:""
       },
     }
   }
