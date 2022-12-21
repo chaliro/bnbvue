@@ -70,7 +70,6 @@ export default ({
     this.$bus.$on('changeTalker',this.changeTalker);
     //切换到这个页面的时候，传递用户id
     this.$bus.$on("chatWindow",(fromId)=>{
-      console.log('id :>> ', fromId.toString());
       this.fromId=fromId.toString();
     });
   },  
