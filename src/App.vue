@@ -13,6 +13,7 @@
 
     <el-container v-if="(login_state==true)" style="height: 660px; border: 1px solid #eee">
 
+    
       <!-- 导航栏 -->
       <el-aside width="200px" style="background-color: #545c64">
 
@@ -26,10 +27,10 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="1-1">个人中心</el-menu-item>
-              <el-menu-item index="1-2">购物车</el-menu-item>
+              <el-menu-item index="1-2" @click="showCart">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
-              <el-menu-item index="1-5">我的消息</el-menu-item>
+              <el-menu-item index="1-5" @click="showChatWindow">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="2">
@@ -39,7 +40,7 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="2-1" @click="showHomestayInfo">房源信息</el-menu-item>
-              <el-menu-item index="2-2">农产品信息</el-menu-item>
+              <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="3">
@@ -149,7 +150,8 @@
 <!-- 主页面 -->
         <el-main v-loading="loading" id="printMe">
           <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
-
+          <productListVue v-if="state.show_products_state"></productListVue>
+          <cartWindow v-if="state.show_cart_state"></cartWindow>
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
 
@@ -381,10 +383,12 @@ import axios from 'axios';
 import config from './assets/config'
 import chatMainVue from './components/chatMain.vue';
 import logInVue from './components/logIn.vue';
+import productListVue from './components/productList.vue';
+import cartWindow from './components/cartWindow.vue';
 var config_url = config.url;
 export default {
   name: 'App',
-  components: {chatMainVue,logInVue},
+  components: {chatMainVue,logInVue,productListVue,cartWindow},
   methods: {
     //显示民宿管理 房源信息界面
     showHomestayInfo() {
@@ -415,6 +419,29 @@ export default {
       this.state = {
         show_chat_window_state: true
       }
+    },
+
+    //显示购物车
+    showCart(){
+      //先等容器创建，再传递参数
+      setTimeout(()=>{
+        this.$bus.$emit("cartWindow",this.cart)
+      },500);
+      this.state = {
+        show_cart_state: true
+      }
+    },
+
+
+    //显示农产品
+    showProducts(){
+      this.state = {
+        show_products_state: true
+      }
+      setTimeout(()=>{
+        this.$bus.$emit("product",this.userInfo);
+      },500)
+      
     },
 
     orderHomestay() {
@@ -1144,6 +1171,10 @@ axios.delete( config_url+'/product/'+e, {
         show_ownerProducts_state:false,
         //显示聊天框
         show_chat_window_state:false,
+        //显示农产品
+        show_products_state:false,
+        //显示购物车
+        show_cart_state:false,
       },
       //房东Id
       ownerId:null,
@@ -1173,26 +1204,51 @@ axios.delete( config_url+'/product/'+e, {
         username:"",
         password:""
       },
+      //用户信息
+      userInfo:null,
+      //购物车
+      cart:[],
     }
   },
   mounted(){
+    //从浏览器获取购物车
+    this.cart=JSON.parse(localStorage.getItem("cart"));
+    if(this.cart==null)
+      this.cart=[];
+
     //绑定事件，登录组件触发时生效
     this.$bus.$on("login",(user,usertype)=>{
       this.login_state=true;
       //用户登录相关信息从loginIn组件传递
       //如果是owner登录
+      this.userInfo=user;
       if(usertype=="owner"){
         this.ownerId=user.id;
         this.ownerInfoObj=user;
       }
+      this.ownerId=user.id;
     })
-    
+    //添加购物车
+    this.$bus.$on("addProductToCart",(item)=>{
+      for(let i in this.cart){
+        if(this.cart[i].id==item.id){
+          return;
+        }
+      }
+      item.userCount=1;
+      this.cart.push(item);
+      console.log('cart :>> ', this.cart);
+      localStorage.setItem("cart", JSON.stringify(this.cart));
+    })
+
   },
   //解绑bus
   beforeDestroy(){
     this.$bus.$off("login");
+    this.$bus.$off("addProductToCart");
+    //存储购物车
+    localStorage.setItem("cart", JSON.stringify(this.cart));
   }
-
 }
 </script>
 
