@@ -425,7 +425,7 @@ export default {
     showCart(){
       //先等容器创建，再传递参数
       setTimeout(()=>{
-        this.$bus.$emit("cartWindow",this.cart)
+        this.$bus.$emit("cartWindow",this.cart,this.userInfo)
       },500);
       this.state = {
         show_cart_state: true
