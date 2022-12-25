@@ -25,7 +25,7 @@
           :rows="9"
           placeholder="请输入内容"
           clearable
-          :disabled="toId==''"
+          :disabled="toId == ''"
           @keyup.enter.native="send()"
           v-model="textarea"
         >
@@ -103,7 +103,6 @@ export default {
     load() {
       //暂时还没有聊天，不执行操作
       if (this.toId == "") return;
-      console.log('1 :>> ');
       //只读取最后一条消息时间之后的消息
       if (this.chatContent.length != 0) {
         let time = this.chatContent[this.chatContent.length - 1].time;
