@@ -19,20 +19,20 @@
         <!-- <el-col :span="5"> -->
         <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
           background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-          <el-submenu index="1">
+          <el-submenu index="1" v-if="controll_module.show_users==true">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>用户管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="1-1">个人中心</el-menu-item>
+              <el-menu-item index="1-1" @click="showUserInfo">个人中心</el-menu-item>
               <el-menu-item index="1-2">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
               <el-menu-item index="1-5">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="2">
+          <el-submenu index="2" v-if="controll_module.show_users==true">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>民宿管理</span>
@@ -42,7 +42,7 @@
               <el-menu-item index="2-2">农产品信息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="3">
+          <el-submenu index="3" v-if="controll_module.show_owner==true">
             <template slot="title">
               <i class="el-icon-document"></i>
               <span>房东管理</span>
@@ -54,7 +54,7 @@
               <el-menu-item index="3-3" @click="showOwnerProducts">我的农产品</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="4">
+          <el-submenu index="4" v-if="controll_module.show_controller==true">
             <template slot="title">
               <i class="el-icon-setting"></i>
               <span>后台管理</span>
@@ -140,14 +140,14 @@
           <el-dropdown>
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item  v-print="printObj">导出</el-dropdown-item>
-              <el-dropdown-item>统计</el-dropdown-item>
+              <el-dropdown-item  v-print="printObj">打印</el-dropdown-item>
+              
             </el-dropdown-menu>
           </el-dropdown>
           <span>{{ userName }}</span>
         </el-header>
 <!-- 主页面 -->
-        <el-main v-loading="loading" id="printMe">
+        <el-main v-loading="loading" id="printMe" ref="printMe">
           <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
 
           <!-- 显示民宿信息 -->
@@ -363,6 +363,56 @@
     <el-button type="primary" @click="submitAddProducts">确 定</el-button>
   </div>
           </el-dialog>
+
+          <!-- 用户个人中心 -->
+          <el-form ref="userInfo" :model="ownerInfo" label-width="80px" v-if="state.show_userInfo_state">
+            <h1>个人信息中心</h1>
+      
+            <el-form-item label="用户名">
+              <el-input v-model="userInfo.userName" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="密码">
+              <el-input type="password" v-model="userInfo.password" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="性别">
+              <el-input v-model="userInfo.sex" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="电话号码">
+              <el-input v-model="userInfo.phone" disabled></el-input>
+            </el-form-item>
+            <el-form-item label="邮箱">
+              <el-input v-model="userInfo.email" disabled></el-input>
+            </el-form-item>
+            <el-button type="info" @click="modifyUserInfo(userInfo.id)">修改</el-button>
+
+          </el-form>
+          <!-- 添加或修改用户界面 -->
+          <el-dialog title="用户信息" :visible.sync="addUser">
+  <el-form :model="userInfoObj">
+    <el-form-item label="用户名" :label-width="10">
+      <el-input v-model="userInfoObj.userName" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+    <el-form-item label="密码" :label-width="10">
+      <el-input v-model="userInfoObj.password" autocomplete="off" :width="100"  type="password"></el-input>
+    </el-form-item>
+    <el-form-item label="性别" :label-width="10">
+      <el-input v-model="userInfoObj.sex" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+    <el-form-item label="电话" :label-width="10">
+      <el-input v-model="userInfoObj.phone" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+    <el-form-item label="邮箱" :label-width="10">
+      <el-input v-model="userInfoObj.email" autocomplete="off" :width="100"></el-input>
+    </el-form-item>
+    
+    
+   
+  </el-form>
+  <div slot="footer" class="dialog-footer">
+    <el-button @click="addUser = false">取 消</el-button>
+    <el-button type="primary" @click="submitAddUser">确 定</el-button>
+  </div>
+          </el-dialog>
         </el-main>
         <el-button type="primary" v-if="state.show_ownerHomestay_state" @click="addHomestay">添加</el-button>
         <el-button type="primary" v-if="state.show_allOwnerInfo_state" @click="addOwnerInfo">添加</el-button>
@@ -386,6 +436,64 @@ export default {
   name: 'App',
   components: {chatMainVue,logInVue},
   methods: {
+ 
+    //显示用户个人中心
+    showUserInfo(){
+      var _this = this
+      _this.loading = true
+      axios.get(config_url+'/user/'+_this.userId, {
+      })
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.userInfo = response.data.data
+          _this.state = {
+        show_userInfo_state: true
+      }
+      _this.loading = false
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+        });
+    },
+    //修改用户个人中心
+    modifyUserInfo(){
+      this.addUser=true
+      this.userInfoObj = this.userInfo
+      console.log(this.userInfoObj)
+    },
+    //提交添加或者修改用户信息
+    submitAddUser(){
+      var _this = this
+      
+      axios.post( config_url+'/user', 
+        _this.userInfoObj
+      )
+        .then(function (response) {// 请求成功
+          console.log(response)
+          _this.$message({
+            message:"成功",
+            type:"success"
+          })
+        })
+        .catch(function (error) {// 请求失败
+          console.log(error);
+          _this.$message({
+            message:"失败",
+            type:"error"
+          })
+        })
+        .finally(function(){
+          // if(_this.state.show_allOwnerInfo_state ==true){
+          //   _this.showAllOwnerInfo()
+          // }
+         
+          if(_this.state.show_userrInfo_state==true){
+            _this.showUserInfo()
+          }
+          
+          _this.addUser = false
+        });
+    },
     //显示民宿管理 房源信息界面
     showHomestayInfo() {
       var _this = this
@@ -1130,8 +1238,18 @@ axios.delete( config_url+'/product/'+e, {
       checkOwnerByNameVar:null,
      //用于存放 房东管理产品信息搜索框的信息 
       checkOwnerProductByNameVar:null,
+      //控制模块显示
+      controll_module:{
+          //显示用户模块
+          show_users:false,
+        //显示房东模块
+        show_owner:false,
+        //显示后台管理模块:
+        show_controller:false,
+      },
    //控制页面跳转
       state: {
+      
         //显示民宿管理 房源信息
         show_homestay_state: false,
         //显示房东管理 个人中心
@@ -1144,13 +1262,19 @@ axios.delete( config_url+'/product/'+e, {
         show_ownerProducts_state:false,
         //显示聊天框
         show_chat_window_state:false,
+        //显示用户个人中心
+        show_userInfo_state:false
       },
+      //用户Id
+      userId:null,
       //房东Id
       ownerId:null,
       //民宿iD 用于添加产品时指定民宿
       homeId:null,
       //控制房东添加或者修改房源的弹出框
       ownerAddHomestay:false,
+      //用来控制后台添加或者修改用户的弹出框
+      addUser:false,
     //用来控制后台添加或者修改房东的弹出框
       addOwner:false,
       //用来控制民宿管理 房源信息 的订购
@@ -1165,6 +1289,7 @@ axios.delete( config_url+'/product/'+e, {
       printObj: {
         id: 'printMe',
       },
+      //房东个人中心信息
       ownerInfo:{
         id:"",
         name:"",
@@ -1173,6 +1298,32 @@ axios.delete( config_url+'/product/'+e, {
         username:"",
         password:""
       },
+       //后台管理人员信息
+       controllerInfo:{
+        id:"",
+        phone:"",
+        email:"",
+        username:"",
+        password:""
+      },
+      //用户个人信息
+      userInfo:{
+        id:"",
+        phone:"",
+        email:"",
+        userName:"",
+        password:"",
+        sex:""
+      },
+      //用来修改或条件用户的弹出框
+      userInfoObj:{
+        id:"",
+        phone:"",
+        email:"",
+        userName:"",
+        password:"",
+        sex:""
+      }
     }
   },
   mounted(){
@@ -1183,7 +1334,26 @@ axios.delete( config_url+'/product/'+e, {
       //如果是owner登录
       if(usertype=="owner"){
         this.ownerId=user.id;
-        this.ownerInfoObj=user;
+        this.ownerInfo=user;
+        this.controll_module={
+          show_owner : true
+        },
+        this.userName = this.ownerInfo.username
+      }
+      if(usertype=="controller"){
+        this.controllerInfo=user;
+        this.controll_module={
+          show_controller : true
+        },
+        this.userName = this.controllerInfo.username
+      }
+      if(usertype=="user"){
+        this.userId=user.id;
+        this.userInfo=user;
+        this.controll_module={
+          show_users : true
+        },
+        this.userName = this.userInfo.userName
       }
     })
     

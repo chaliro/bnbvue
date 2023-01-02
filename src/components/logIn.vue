@@ -12,7 +12,7 @@
           <el-radio-group v-model="loginType">
             <el-radio label="user">普通用户</el-radio>
             <el-radio label="owner">房东</el-radio>
-            <el-radio label="conrtoller">管理人员</el-radio>
+            <el-radio label="controller">管理人员</el-radio>
             </el-radio-group>
         <el-divider></el-divider>
           <el-form-item>
@@ -52,6 +52,7 @@ export default {
         if(this.login.password.length==0||this.login.username.length==0)
         {
             this.$message.error('请输入账号和密码');
+            console.log(this.loginType)
             return ;
         }
         this.loading=true;
