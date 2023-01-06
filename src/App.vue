@@ -279,8 +279,12 @@
           <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
           <productListVue v-if="state.show_products_state"></productListVue>
           <cartWindow v-if="state.show_cart_state"></cartWindow>
+          <!--后台管理-用户信息-->
+          <user-info v-if="this.state.show_backUserInfo_state"></user-info>
           <!--后台管理-房源信息-->
-          <house-info v-if="this.state.show_BackHomeStayInfo_state"></house-info>
+          <house-info v-if="this.state.show_backHomeStayInfo_state"></house-info>
+          <!--后台管理-评论信息-->
+          <comment-info v-if="this.state.show_backCommentInfo_state"></comment-info>
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
 
@@ -596,10 +600,14 @@ import chatMainVue from "./components/chatMain.vue";
 import logInVue from "./components/logIn.vue";
 import productListVue from "./components/productList.vue";
 import cartWindow from "./components/cartWindow.vue";
+import HouseInfo from "./components/HouseInfo.vue";
+import UserInfo from "./components/UserInfo.vue";
+import CommentInfo from "./components/CommentInfo.vue";
+
 var config_url = config.url;
 export default {
   name: "App",
-  components: { chatMainVue, logInVue, productListVue, cartWindow },
+  components: { chatMainVue, logInVue, productListVue, cartWindow, HouseInfo, UserInfo, CommentInfo },
   methods: {
  
     //显示用户个人中心
@@ -1406,7 +1414,23 @@ axios.delete( config_url+'/product/'+e, {
     showBackHomeStayInfo(){
       this.loading = true;
       this.state = {
-        show_BackHomeStayInfo_state:true
+        show_backHomeStayInfo_state:true
+      }
+      this.loading = false;
+    },
+    //后台管理 用户信息
+    showBackUserInfo(){
+      this.loading = true;
+      this.state = {
+        show_backUserInfo_state:true
+      }
+      this.loading = false;
+    },
+    //后台管理 评论信息
+    showBackCommentInfo(){
+      this.loading = true;
+      this.state = {
+        show_backCommentInfo_state:true
       }
       this.loading = false;
     }
@@ -1475,7 +1499,11 @@ axios.delete( config_url+'/product/'+e, {
          //显示后台管理 房东信息
         show_allOwnerInfo_state:false,
         //显示后台管理 房源信息
-        show_BackHomeStayInfo_state:false,
+        show_backHomeStayInfo_state:false,
+        //显示后台管理 用户信息
+        show_backUserInfo_state:false,
+        //显示后台管理 评论信息
+        show_backCommentInfo_state:false,
          //显示房东管理 产品信息
         show_ownerProducts_state:false,
         //显示聊天框
@@ -1516,9 +1544,11 @@ axios.delete( config_url+'/product/'+e, {
     }
   },
   mounted() {
+    /*
     //从浏览器获取购物车
     this.cart = JSON.parse(localStorage.getItem("cart"));
     if (this.cart == null) this.cart = [];
+    */
 
     //绑定事件，登录组件触发时生效
     this.$bus.$on("login", (user, usertype) => {

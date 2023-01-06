@@ -1,13 +1,13 @@
 <template>
     <div class="common-layout">
         <el-container>
-            <el-header class="tag-header">
-                <el-tag class="ml-2" type="info" size="large">用户信息</el-tag>
-            </el-header>
             <el-main>
-                <el-button type="primary" style="margin-bottom:1vmin" @click="getAddForm">
-                    <el-icon><Plus /></el-icon>添加用户
-                </el-button>
+                <div id="addDiv">
+                    <el-button type="primary" style="margin-bottom:1vmin" @click="getAddForm">
+                        <i class="el-icon-plus"></i>
+                        <span>添加用户</span>
+                    </el-button>
+                </div>
 
                 <el-input
                     v-model="searchBox.searchInfo"
@@ -33,82 +33,110 @@
                 <el-scrollbar>
                     <el-table 
                     :data="userInfoList" 
-                    :fit="true"
                     :border="true"
-                    :highlight-current-row="true"
-                    >
+                    :fit="true"
+                    :stripe="true"
+                    style="width: 100%">
                         <el-table-column prop="userName" label="用户名" width="120" />
+                        <el-table-column prop="password" label="密码" width="120" />
                         <el-table-column prop="phone" label="电话号码" wddth="120" />
                         <el-table-column prop="email" label="邮箱" wddth="120" />
                         <el-table-column prop="sex" label="性别" wddth="120" />
 
                         <el-table-column lable="更改信息" width="200">
-                            <el-button type="primary" @click="modifyFormVisible = true">修改</el-button>
-                            <el-button type="danger" @click="deleteFormVisible = true">删除</el-button>
+                            <template #default="scope">
+                                <el-button type="primary" @click="getModifyForm(scope.row)">修改</el-button>
+                                <el-button type="danger" @click="getDeleteForm(scope.row)">删除</el-button>
+                            </template>
                         </el-table-column>
                     </el-table>
                 </el-scrollbar>
             </el-main>
         </el-container>
+
+        <el-dialog 
+            :visible.sync="addFormVisible"
+            title="添加用户"
+            class="dialog"
+        >
+            <el-form :model="userInfo">
+                <span>用户名</span>
+                <el-input v-model="userInfo.userName" autocomplete="off" />
+                <span>密码</span>
+                <el-input v-model="userInfo.password" autocomplete="off" />
+                <span>电话号码</span>
+                <el-input v-model="userInfo.phone" autocomplete="off"/>
+                <span>邮箱</span>
+                <el-input v-model="userInfo.email" autocomplete="off" />
+                <div class="block">
+                    <div>性别</div>
+                    <el-select v-model="userInfo.sex" class="m-2" placeholder="选择性别" size="default">
+                        <el-option
+                            v-for="item in this.options.sexOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                </div>
+            </el-form>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="addFormVisible = false">取消</el-button>
+                    <el-button type="primary" @click="handleAdd">确认</el-button>
+                </span>
+            </template>
+        </el-dialog>
+
+        <el-dialog 
+            :visible.sync="modifyFormVisible"
+            title="修改用户信息"
+            class="dialog"
+        >
+            <el-form :model="userInfo">
+                <span>用户名</span>
+                <el-input v-model="userInfo.userName" autocomplete="off" />
+                <span>密码</span>
+                <el-input v-model="userInfo.password" autocomplete="off" />
+                <span>电话号码</span>
+                <el-input v-model="userInfo.phone" autocomplete="off"/>
+                <span>邮箱</span>
+                <el-input v-model="userInfo.email" autocomplete="off" />
+                <div class="block">
+                    <div>性别</div>
+                    <el-select v-model="userInfo.sex" class="m-2" placeholder="选择性别" size="default">
+                        <el-option
+                            v-for="item in this.options.sexOptions"
+                            :key="item.value"
+                            :label="item.label"
+                            :value="item.value"
+                        />
+                    </el-select>
+                </div>
+            </el-form>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="modifyFormVisible = false">取消</el-button>
+                    <el-button type="primary" @click="handleModify">确认</el-button>
+                </span>
+            </template>
+        </el-dialog>
+        
+        <el-dialog
+            :visible.sync="deleteFormVisible"
+            title="警告"
+            width="30%"
+            class="dialog"
+        >
+            <span>确认删除改用户信息吗？</span>
+            <template #footer>
+                <span class="dialog-footer">
+                    <el-button @click="deleteFormVisible = false">取消</el-button>
+                    <el-button type="primary" @click="handleDelete">确认</el-button>
+                </span>
+            </template>
+        </el-dialog>
     </div>
-
-    <el-dialog 
-        v-model="addFormVisible" 
-        title="添加用户"
-    >
-        <el-form :model="userInfo">
-            <span>用户名</span>
-            <el-input v-model="userInfo.userName" autocomplete="off" />
-            <span>电话号码</span>
-            <el-input v-model="userInfo.phone" autocomplete="off"/>
-            <span>邮箱</span>
-            <el-input v-model="userInfo.email" autocomplete="off" />
-            <span>性别</span>
-            <el-input v-model="userInfo.sex" autocomplete="off" />
-        </el-form>
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="addFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="addUserInfo">确认</el-button>
-            </span>
-        </template>
-    </el-dialog>
-
-    <el-dialog 
-        v-model="modifyFormVisible" 
-        title="修改用户信息"
-    >
-        <el-form :model="userInfo">
-            <span>用户名</span>
-            <el-input v-model="userInfo.userName" autocomplete="off" />
-            <span>电话号码</span>
-            <el-input v-model="userInfo.phone" autocomplete="off"/>
-            <span>邮箱</span>
-            <el-input v-model="userInfo.email" autocomplete="off" />
-            <span>性别</span>
-            <el-input v-model="userInfo.sex" autocomplete="off" />
-        </el-form>
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="modifyFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="modifyUserInfo">确认</el-button>
-            </span>
-        </template>
-    </el-dialog>
-    
-    <el-dialog
-        v-model="deleteFormVisible"
-        title="警告"
-        width="30%"
-    >
-        <span>确认删除改用户信息吗？</span>
-        <template #footer>
-            <span class="dialog-footer">
-                <el-button @click="deleteFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="deleteUserInfo">确认</el-button>
-            </span>
-        </template>
-    </el-dialog>
 </template>
 
 <script>
@@ -119,18 +147,23 @@ export default {
         return{
             title:'用户信息',
             userInfoList:[
-                {id:'1', userName:'wjq', phone:'111', email:'111', sex:'男'},
-                {id:'2', userName:'3mz', phone:'111', email:'111', sex:'女'},
-                {id:'3', userName:'张三', phone:'10086', email:'0110', sex:'男'}
             ],
 
-            userInfoModel:{id:'', userName:'', phone:'', email:'', sex:''},
-            userInfo:{id:'', userName:'', phone:'', email:'', sex:''},
+            userInfoModel:{id:'', userName:'', password:'', phone:'', email:'', sex:''},
+            userInfo:{id:'', userName:'', password:'', phone:'', email:'', sex:''},
+
+            //选项
+            options:{
+                sexOptions:[
+                    {value:'男', label:'男'},
+                    {value:'女', label:'女'}
+                ],
+            },
 
             //搜索框信息
             searchBox:{ searchInfo:'', optionValue:'', items:[
                 {label:'用户名', value:'用户名'},
-                {label:'手机号码', value:'手机号码'}
+                {label:'电话号码', value:'电话号码'}
             ]},
 
             //表单可见性
@@ -142,10 +175,10 @@ export default {
 
     methods:{
         //获取用户信息
-        getUserInfo(){
+        getUserInfoList(){
             let _this = this;
-            axios.post('',{
-            })
+            let url = 'http://localhost:8080/user/getAllUser';
+            axios.get(url)
             .then(function (response) {
                 _this.userInfoList = response.data;
                 console.log(response);
@@ -157,69 +190,137 @@ export default {
             });
         },
 
-        //获取添加表单
+        //打开添加表单
         getAddForm(){
             this.userInfo = JSON.parse(JSON.stringify(this.userInfoModel))
             this.addFormVisible = true;
+            console.log('添加表单')
         },
 
-        //添加用户信息
-        addUserInfo(){
-            this.addFormVisible = false;
-
-            axios.post('',{
-                
+        //添加
+        handleAdd(){
+            let _this = this;
+            let url = 'http://localhost:8080/user/addUser';
+            axios({
+                method: 'POST',
+                url: url,
+                headers: {'content-type': 'application/x-www-form-urlencoded'},
+                data: {
+                    userName: this.userInfo.userName,
+                    password: this.userInfo.password,
+                    phone: this.userInfo.phone,
+                    email: this.userInfo.email,
+                    sex: this.userInfo.sex
+                }
             })
             .then(function (response) {
-                console.log(response);
+                _this.getUserInfoList();
             })
             .catch(function (error) {
                 console.log(error);
             })
-            .then(function () {
+            .then(function (){
+                _this.addFormVisible = false;
             });
         },
 
-        //修改用户信息
-        modifyUserInfo(){
-            this.modifyFormVisible = false;
-
-            axios.post('',{
-                
+        //打开修改表单
+        getModifyForm(row){
+            this.userInfo = JSON.parse(JSON.stringify(this.userInfoModel));
+            this.modifyFormVisible = true;
+            this.userInfo = row;
+            console.log('要修改的记录id:'+row.id)
+        },
+        //修改
+        handleModify(){
+            let _this = this;
+            let url = 'http://localhost:8080/user/modifyUser';
+            axios({
+                method: 'POST',
+                url: url,
+                headers: {'content-type': 'application/x-www-form-urlencoded'},
+                data: this.userInfo
             })
             .then(function (response) {
-                console.log(response);
+                _this.getUserInfoList();
             })
             .catch(function (error) {
                 console.log(error);
             })
-            .then(function () {
+            .then(function (){
+                _this.modifyFormVisible = false;
             });
         },
 
-        //删除用户信息
-        deleteUserInfo(){
-            this.deleteFormVisible = false;
-            
-            axios.post('',{
-                action:''
+        //打开删除表单
+        getDeleteForm(row){
+            this.deleteFormVisible = true;
+            this.userInfo = row;
+        },
+        //删除信息
+        handleDelete(){
+            let _this = this;
+            let url = 'http://localhost:8080/user/deleteUser';
+            axios({
+                method: 'DELETE',
+                url: url,
+                headers: {'content-type': 'application/x-www-form-urlencoded'},
+                data: this.userInfo
             })
             .then(function (response) {
-                console.log(response);
+                _this.getUserInfoList();
             })
             .catch(function (error) {
                 console.log(error);
             })
-            .then(function () {
+            .then(function (){
+                _this.deleteFormVisible = false;
             });
         },
 
+        //搜索
+        searchInput(){
+            let _this = this;
+            let url = '';
+            let data = {};
+            if(this.searchBox.optionValue == '电话号码'){
+                url = 'http://localhost:8080/user/selectUserByPhone';
+                data.phone = this.searchBox.searchInfo;
+            }else{
+                url = 'http://localhost:8080/user/selectUserByName';
+                data.userName = this.searchBox.searchInfo;
+            }
+            console.log(this.searchBox.searchInfo)
+            axios({
+                method: 'POST',
+                url: url,
+                headers: {'content-type': 'application/x-www-form-urlencoded'},
+                data: data
+            })
+            .then(function (response) {
+                _this.userInfoList = response.data;
+            })
+            .catch(function (error) {
+                console.log(error);
+            })
+            .then(function (){
+            });
+        }
+    },
+
+    mounted(){
+        //查找全部信息
+        this.getUserInfoList();
     }
 }
 </script>
 
 <style>
-    .tag-header{
-        text-align: right;
+    #addDiv{
+        text-align: left;
+    }
+
+    .dialog{
+        text-align: left;
     }
 </style>
