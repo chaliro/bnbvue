@@ -30,6 +30,7 @@
               <el-menu-item index="1-2">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
+              <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
               <el-menu-item index="1-5" @click="showChatWindow">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -1550,10 +1551,28 @@ axios.delete( config_url+'/product/'+e, {
     if (this.cart == null) this.cart = [];
     */
 
+    //绑定事件，从购物车与商家联系
+    this.$bus.$on('chatFromProductList',(item)=>{
+      this.showChatWindow();
+      this.$axios.get(`${config_url}/owner/product/find/${item.id}`).then(res=>{
+        if(res.data.flag==false){
+          this.$message.error("服务器连接失败");
+        }else{
+          var id=res.data.data;
+          setTimeout(() => {
+            this.$bus.$emit("addChater",id);
+          }, 500);
+        }
+      })
+
+    })
+
     //绑定事件，登录组件触发时生效
     this.$bus.$on("login", (user, usertype) => {
       console.log("object :>> ");
+      
       this.login_state = true;
+      console.log('this.login_state :>> ', this.login_state);
       //用户登录相关信息从loginIn组件传递
       //如果是owner登录
       if(usertype=="owner"){
@@ -1589,6 +1608,7 @@ axios.delete( config_url+'/product/'+e, {
   beforeDestroy() {
     this.$bus.$off("login");
     this.$bus.$off("addProductToCart");
+    this.$bus.$off("chatFromProductList");
     //存储购物车
     localStorage.setItem("cart", JSON.stringify(this.cart));
   },
