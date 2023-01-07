@@ -27,7 +27,7 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="1-1">个人中心</el-menu-item>
-              <el-menu-item index="1-2">购物车</el-menu-item>
+              <el-menu-item index="1-2" @click="showCart">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
               <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
@@ -1438,6 +1438,13 @@ axios.delete( config_url+'/product/'+e, {
   },
   data() {
     return {
+      //undefined 数据,但是没有这个声明会进不去页面
+      controll_module:{
+        show_users:true,
+        show_owner:false,
+        show_controller:false,
+      },
+    
       //登录状态
       login_state: false,
 
@@ -1525,7 +1532,7 @@ axios.delete( config_url+'/product/'+e, {
       //用来控制民宿管理 房源信息 的订购
       order: false,
       //用来表示 页面加载时的动画
-      loading: true,
+      loading: false,
       //用来控制房东添加或者修改产品的弹出框
       addProducts: false,
       //表示添加产品时对应的房源名字
@@ -1545,11 +1552,14 @@ axios.delete( config_url+'/product/'+e, {
     }
   },
   mounted() {
-    /*
     //从浏览器获取购物车
-    this.cart = JSON.parse(localStorage.getItem("cart"));
-    if (this.cart == null) this.cart = [];
-    */
+    let item=localStorage.getItem("cart");
+    if(!typeof(item)!= undefined){
+      this.cart = JSON.parse(item);
+    }else{
+      this.cart=[];
+    }
+    
 
     //绑定事件，从购物车与商家联系
     this.$bus.$on('chatFromProductList',(item)=>{

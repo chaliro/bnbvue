@@ -94,16 +94,20 @@ export default {
     this.$bus.$on("backInfo", this.receiverFormSon);
 
     //当添加聊天对象时
-    this.$bus.$on("addChater",(id)=>{
+    this.$bus.$on("addChater", (id) => {
       this.pepolesWithChat.push(this.createPeople(id));
-    })
+    });
     this.$bus.$on("chatWindow", (fromId) => {
       this.fromId = fromId.toString();
     });
+    setTimeout(() => {
+      this.getChatter();
+    }, 500);
     this.timer = setInterval(() => {
       this.getChatter();
-    }, 10000);
+    }, 5000);
   },
+
   beforeDestroy() {
     //销毁挂载
     this.$bus.$off("backInfo");
@@ -127,7 +131,7 @@ li {
 }
 .main {
   height: 800px;
-  width: 800px;
+  width: 1000px;
   float: left;
 }
 .people {

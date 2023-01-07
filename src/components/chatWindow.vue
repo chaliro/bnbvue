@@ -2,9 +2,10 @@
 <template>
   <div>
     <div class="main">
-      <div class="ChatContent">
+      <div class="ChatContent" id="lists"
+      ref="lists">
         <div class="infinite-list-wrapper" style="overflow: auto">
-          <ul class="list" infinite-scroll-disabled="disabled">
+          <ul class="list" infinite-scroll-disabled="disabled" >
             <!-- eslint-disable vue/require-v-for-key -->
             <li v-for="item in chatContent" :key="item.time" class="list-item">
               <div :class="item.fromId == fromId ? 'myContent' : 'hisContent'">
@@ -32,6 +33,50 @@
         </el-input>
       </div>
     </div>
+    <div class="option">
+      <div class="button">
+        <el-button
+          type="success"
+          round
+          style="float: right"
+          @click="saveAsPDF()"
+          icon="el-icon-download"
+          >导出pdf</el-button
+        >
+      </div>
+      
+      <div class="button">
+        <download-excel
+          types="xls"
+          :data="chatContent"
+          :fields="fields"
+          :name="exportName"
+          :worksheet="exportSheet"
+          :header="exportHeader"
+          :footer="exportFooter"
+          :defaultValue="exportDefaultValue"
+        >
+          <el-button
+            type="success"
+            round
+            icon="el-icon-download"
+            style="float: right"
+            >导出Excel</el-button
+          >
+        </download-excel>
+      </div>
+
+      <div class="button">
+        <el-button
+          type="success"
+          round
+          style="float: right"
+          v-print="printObj"
+          icon="el-icon-download"
+          >打印</el-button
+        >
+      </div>
+    </div>
   </div>
 </template>
 
@@ -43,12 +88,40 @@ export default {
   name: "chatWindow",
   data() {
     return {
+      fields: {
+        发送者: "fromId",
+        接收者: "toId",
+        时间: "time",
+        内容: "content",
+      },
+      exportName: "对话列表",
+      exportSheet: "对话列表",
+
       timer: null, //定时器
       chatContent: [],
       fromId: "",
       toId: "",
       loading: false,
       textarea: "",
+
+      printObj: {
+        id: "lists",
+        popTitle: "good print",
+        extraCss:
+          "https://cdn.bootcdn.net/ajax/libs/animate.css/4.1.1/animate.compat.css, https://cdn.bootcdn.net/ajax/libs/hover.css/2.3.1/css/hover-min.css",
+        extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>',
+        beforeOpenCallback(vue) {
+          vue.printLoading = true;
+          console.log("打开之前");
+        },
+        openCallback(vue) {
+          vue.printLoading = false;
+          console.log("执行了打印");
+        },
+        closeCallback() {
+          console.log("关闭了打印工具");
+        },
+      },
     };
   },
   computed: {
@@ -81,6 +154,11 @@ export default {
   },
 
   methods: {
+    //导出pdf
+    saveAsPDF() {
+      this.$PDFSave(this.$refs.lists, "对话");
+    },
+
     //新建一个消息
     newMessage() {
       return {
@@ -214,5 +292,15 @@ export default {
   margin-right: 10px;
   background-color: rgb(137, 217, 97);
   float: right;
+}
+.option {
+  float: right;
+  height: 800px;
+  width: 200px;
+}
+.button{
+  float: right;
+  height: 100px;
+  width: 200px;
 }
 </style>
