@@ -74,7 +74,7 @@
               <span>驾驶舱</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="5">驾驶舱界面</el-menu-item>
+              <el-menu-item index="5" @click="show_Manager">驾驶舱界面</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -565,6 +565,14 @@
     <el-button type="primary" @click="submitAddProducts">确 定</el-button>
   </div>
           </el-dialog>
+          
+          
+          <template>
+  <!--  -->
+    <div id="sector" v-if="state.show_manager_state"  ref="chart">
+          </div>
+
+</template>
         </el-main>
         <el-button
           type="primary"
@@ -597,11 +605,29 @@ import logInVue from "./components/logIn.vue";
 import productListVue from "./components/productList.vue";
 import cartWindow from "./components/cartWindow.vue";
 var config_url = config.url;
+const echarts = require('echarts');
 export default {
   name: "App",
   components: { chatMainVue, logInVue, productListVue, cartWindow },
   methods: {
- 
+    initCharts () {
+        let myChart = this.$echarts.init(this.$refs.chart);
+        // 绘制图表
+        myChart.setOption({
+            title: { text: '在Vue中使用echarts' },
+            tooltip: {},
+            xAxis: {
+                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
+            },
+            yAxis: {},
+            series: [{
+                name: '销量',
+                type: 'bar',
+                data: [5, 20, 36, 10, 10, 20]
+            }]
+        });
+      },
+    
     //显示用户个人中心
     showUserInfo(){
       var _this = this
@@ -1409,6 +1435,14 @@ axios.delete( config_url+'/product/'+e, {
         show_BackHomeStayInfo_state:true
       }
       this.loading = false;
+    },
+    show_Manager(){
+      this.state={
+        show_manager_state:true
+      }
+      this.loading=false
+      
+    
     }
   },
   data() {
@@ -1480,6 +1514,7 @@ axios.delete( config_url+'/product/'+e, {
         show_ownerProducts_state:false,
         //显示聊天框
         show_chat_window_state:false,
+        show_manager_state:false,
       },
       //用户Id
       userId:null,
@@ -1522,9 +1557,11 @@ axios.delete( config_url+'/product/'+e, {
     }
   },
   mounted() {
-    //从浏览器获取购物车
-    this.cart = JSON.parse(localStorage.getItem("cart"));
-    if (this.cart == null) this.cart = [];
+
+    
+    // //从浏览器获取购物车
+    // this.cart = JSON.parse(localStorage.getItem("cart"));
+    // if (this.cart == null) this.cart = [];
 
     //绑定事件，登录组件触发时生效
     this.$bus.$on("login", (user, usertype) => {
@@ -1550,7 +1587,7 @@ axios.delete( config_url+'/product/'+e, {
         this.controll_module = {show_controller:true};
 
       }
-      
+      this.initCharts();
      
     });
     //添加购物车
@@ -1595,7 +1632,12 @@ axios.delete( config_url+'/product/'+e, {
   color: #2c3e50;
   margin-top: 60px;
 }
-
+#sector{
+    width: 100%;
+    height: 300px;
+    margin: 0 auto;
+    background-color: aqua;
+  }
 .el-header {
   background-color: #b3c0d1;
   color: #333;
