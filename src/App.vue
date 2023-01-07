@@ -75,7 +75,7 @@
               <span>驾驶舱</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="5">驾驶舱界面</el-menu-item>
+              <el-menu-item index="5" @click="showCockpit">驾驶舱界面</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -286,9 +286,11 @@
           <house-info v-if="this.state.show_backHomeStayInfo_state"></house-info>
           <!--后台管理-评论信息-->
           <comment-info v-if="this.state.show_backCommentInfo_state"></comment-info>
+          <!-- 显示驾驶舱 -->
+          <cockpitWindowVue v-if="this.state.show_cockpit_state"></cockpitWindowVue>
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
-
+          
             <el-table-column prop="name" label="名字" width="120">
             </el-table-column>
 
@@ -604,13 +606,21 @@ import cartWindow from "./components/cartWindow.vue";
 import HouseInfo from "./components/HouseInfo.vue";
 import UserInfo from "./components/UserInfo.vue";
 import CommentInfo from "./components/CommentInfo.vue";
+import cockpitWindowVue from "./components/cockpitWindow.vue";
+
 
 var config_url = config.url;
 export default {
   name: "App",
-  components: { chatMainVue, logInVue, productListVue, cartWindow, HouseInfo, UserInfo, CommentInfo },
+  components: { chatMainVue, logInVue, productListVue, cartWindow, HouseInfo, UserInfo, CommentInfo,cockpitWindowVue },
   methods: {
  
+    //显示驾驶舱
+    showCockpit(){
+      this.state = {
+        show_cockpit_state: true,
+      };
+    },
     //显示用户个人中心
     showUserInfo(){
       var _this = this
@@ -703,7 +713,7 @@ export default {
     showCart() {
       //先等容器创建，再传递参数
       setTimeout(() => {
-        this.$bus.$emit("cartWindow", this.cart, this.userInfo);
+        this.$bus.$emit("cartWindow", this.cart, this.tempInfo);
       }, 500);
       this.state = {
         show_cart_state: true,
@@ -1445,6 +1455,9 @@ axios.delete( config_url+'/product/'+e, {
         show_controller:false,
       },
     
+      //临时保存数据，不要删除
+      tempInfo:null,
+
       //登录状态
       login_state: false,
 
@@ -1497,7 +1510,8 @@ axios.delete( config_url+'/product/'+e, {
       checkOwnerProductByNameVar:null,
    //控制页面跳转
       state: {
-      
+        //显示驾驶舱
+        show_cockpit_state: false,
         //显示民宿管理 房源信息
         show_homestay_state: false,
         //显示房东管理 个人中心
@@ -1584,6 +1598,7 @@ axios.delete( config_url+'/product/'+e, {
       this.login_state = true;
       console.log('this.login_state :>> ', this.login_state);
       //用户登录相关信息从loginIn组件传递
+      this.tempInfo=user;
       //如果是owner登录
       if(usertype=="owner"){
         this.ownerId=user.id;
