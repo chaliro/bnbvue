@@ -68,6 +68,7 @@ export default {
                 this.loading=false;
             if(res.data.flag){
                 this.login.state=true;
+                console.log("ssssss" + this.login.state)
                 this.$bus.$emit("login",res.data.data,this.loginType);
 
             }else{

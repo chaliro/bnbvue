@@ -20,7 +20,7 @@
         <!-- <el-col :span="5"> -->
         <el-menu default-active="2" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
           background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
-          <el-submenu index="1">
+          <el-submenu index="1" v-if="controll_module.show_users==true">
             <template slot="title">
               <i class="el-icon-location"></i>
               <span>用户管理</span>
@@ -1485,6 +1485,7 @@ axios.delete( config_url+'/product/'+e, {
       userId:null,
       //房东Id
       ownerId:null,
+      controllerId:null,
       //民宿iD 用于添加产品时指定民宿
       homeId:null,
       //控制房东添加或者修改房源的弹出框
@@ -1513,6 +1514,11 @@ axios.delete( config_url+'/product/'+e, {
         username:"",
         password:""
       },
+      controll_module:{
+        show_users:false,
+        show_owner:false,
+        show_controller:false
+      }
     }
   },
   mounted() {
@@ -1529,8 +1535,23 @@ axios.delete( config_url+'/product/'+e, {
       if(usertype=="owner"){
         this.ownerId=user.id;
         this.ownerInfoObj=user;
+        this.controll_module = {show_owner:true};
+
       }
-      this.ownerId = user.id;
+      if(usertype=="user"){
+        this.userId=user.id;
+        this.userInfoObj=user;
+        this.controll_module = {show_users:true};
+
+      }
+      if(usertype=="controller"){
+        this.controllerId=user.id;
+        
+        this.controll_module = {show_controller:true};
+
+      }
+      
+     
     });
     //添加购物车
     this.$bus.$on("addProductToCart", (item) => {
