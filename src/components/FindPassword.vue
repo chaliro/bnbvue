@@ -1,26 +1,22 @@
 <template>
-    <el-dialog
-        :visible.sync="addFormVisible"
-        title="房东账号注册"
+    <el-dialog 
+        :visible.sync="modifyFormVisible" 
+        title="修改密码"
         class="dialog"
         @close = "closePage"
-    >
+        >
         <el-form :model="ownerInfo">
             <span>姓名</span>
             <el-input v-model="ownerInfo.name" autocomplete="off" />
             <span>电话号码</span>
             <el-input v-model="ownerInfo.phone" autocomplete="off"/>
-            <span>用户名</span>
-            <el-input v-model="ownerInfo.username" autocomplete="off"/>
-            <span>账号密码</span>
+            <span>新密码</span>
             <el-input v-model="ownerInfo.password" autocomplete="off"/>
-            <span>邮箱</span>
-            <el-input v-model="ownerInfo.email" autocomplete="off"/>
         </el-form>
         <template #footer>
             <span class="dialog-footer">
-                <el-button @click="addFormVisible = false">取消</el-button>
-                <el-button type="primary" @click="handleAdd">确认</el-button>
+                <el-button @click="modifyFormVisible=false">取消</el-button>
+                <el-button type="primary" @click="handleModify">确认</el-button>
             </span>
         </template>
     </el-dialog>
@@ -30,26 +26,25 @@
 import axios from 'axios';
 import { Message } from 'element-ui'
 
-
 export default {
     data(){
         return{
-            ownerInfoModel:{name:'', phone:'', email:'', username:'', password:''},
-            ownerInfo: {name:'', phone:'', email:'', username:'', password:''},
+            ownerInfoModel:{name:'', phone:'', password:''},
+            ownerInfo: {name:'', phone:'', password:''},
         }
     },
 
-    props:['addFormVisible'],
+    props:['modifyFormVisible'],
 
     methods:{
-        getAddForm(){
+        getModifyForm(){
             this.ownerInfo = JSON.parse(JSON.stringify(this.ownerInfoModel))
-            this.addFormVisible = true;
+            this.modifyFormVisible = true;
         },
 
-        handleAdd(){
+        handleModify(){
             let _this = this;
-            let url = 'http://localhost:8080/owner/addOwner';
+            let url = 'http://localhost:8080/owner/modifyPasswordByNameAndPhone';
             axios({
                 method: 'POST',
                 url: url,
@@ -58,29 +53,23 @@ export default {
             })
             .then(function (response) {
                 Message({
-                    message: '注册成功',
-                    type: 'success'
-                });
-                console.log(response);
+                    message: '修改密码成功!',
+                    type: 'success',
+                })
+                console.log(response)
             })
             .catch(function (error) {
                 console.log(error);
             })
-            .then(function () {
-                _this.addFormVisible = false;
+            .then(function (){
+                _this.modifyFormVisible = false;
             });
         },
 
         //关闭页面
         closePage(){
-            this.$emit("closeOwnerEnroll");
+            this.$emit("closeFindPassword");
         }
     }
 }
 </script>
-
-<style>
-    .dialog{
-        text-align: left;
-    }
-</style>

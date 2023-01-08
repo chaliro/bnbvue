@@ -28,19 +28,22 @@
         <el-radio label="conrtoller">管理人员</el-radio>
       </el-radio-group>
       <el-divider></el-divider>
-      <el-form-item>
+      <div>
         <el-button type="primary" v-on:click="loginAction()">登录</el-button>
         <el-button type="primary" @click="ownerEnrollVisible=true">房东注册</el-button>
-      </el-form-item>
+        <el-button type="primary" @click="findPasswordVisible=true">房东密码找回</el-button>
+      </div>
     </el-form>
 
-    <OwnerEnroll v-if="ownerEnrollVisible" :addFormVisible = "ownerEnrollVisible" @closeOwnerEnroll = "ownerEnrollVisible = false"></OwnerEnroll>
+    <OwnerEnroll v-if="ownerEnrollVisible" :addFormVisible = "ownerEnrollVisible" @closeOwnerEnroll = "ownerEnrollVisible = false" />
+    <FindPassword v-if="findPasswordVisible" :modifyFormVisible = "findPasswordVisible" @closeFindPassword = "findPasswordVisible = false" />
   </div>
 </template>
 
 <script>
 import config from "@/assets/config";
 import OwnerEnroll from "./OwnerEnroll.vue"
+import FindPassword from "./FindPassword.vue";
 
 var url = config.url;
 export default {
@@ -63,7 +66,9 @@ export default {
       loading: false,
 
       //房东注册页面
-      ownerEnrollVisible:false
+      ownerEnrollVisible:false,
+      //找回密码页面
+      findPasswordVisible:false
     };
   },
   methods: {
@@ -112,7 +117,7 @@ export default {
     },
   },
 
-  components:{ OwnerEnroll }
+  components:{ OwnerEnroll, FindPassword }
 };
 </script>
 
