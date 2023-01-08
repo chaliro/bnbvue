@@ -30,7 +30,6 @@
               <el-menu-item index="1-2">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
-              <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
               <el-menu-item index="1-5" @click="showChatWindow">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
