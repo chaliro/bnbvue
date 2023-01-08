@@ -17,7 +17,8 @@
     "vue": "^2.6.14",
     "vue-json-excel": "^0.3.0",
     "vue-print-nb": "^1.7.5",
-    "vue-to-pdf": "^1.0.0"
+    "vue-to-pdf": "^1.0.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.12.16",

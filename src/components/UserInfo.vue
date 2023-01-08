@@ -2,14 +2,19 @@
   <div class="common-layout">
     <el-container>
       <el-main>
-        <div id="addDiv">
+        <div id="functionDiv">
           <el-button
-            type="primary"
-            style="margin-bottom: 1vmin"
-            @click="getAddForm"
-          >
+            type="primary" style="margin-bottom: 1vmin" @click="getAddForm">
             <i class="el-icon-plus"></i>
             <span>添加用户</span>
+          </el-button>
+
+          <el-button type="primary" style="margin-bottom:1vmin" @click="printPage">
+              <span>打印页面</span>
+          </el-button>
+
+          <el-button type="primary" style="margin-bottom:1vmin" @click="printExcel">
+              <span>导出为excel</span>
           </el-button>
         </div>
 
@@ -343,6 +348,23 @@ export default {
         })
         .then(function () {});
     },
+
+    //打印功能
+    printPage(){
+        window.print();
+    },
+
+    //导出excel功能
+    printExcel(){
+        // 创建工作表
+        const data = XLSX.utils.json_to_sheet(this.userInfoList)
+        // 创建工作簿
+        const wb = XLSX.utils.book_new()
+        // 将工作表放入工作簿中
+        XLSX.utils.book_append_sheet(wb, data, 'data')
+        // 生成文件并下载
+        XLSX.writeFile(wb, 'userInfo.xlsx')
+    }
   },
 
   mounted() {
@@ -353,7 +375,7 @@ export default {
 </script>
 
 <style>
-#addDiv {
+#functionDiv {
   text-align: left;
 }
 
