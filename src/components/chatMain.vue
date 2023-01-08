@@ -113,6 +113,7 @@ export default {
     this.$bus.$off("backInfo");
     this.$bus.$off("addChater");
     this.$bus.$off("chatWindow");
+    clearInterval(this.timer)
   },
 };
 </script>
