@@ -30,13 +30,18 @@
       <el-divider></el-divider>
       <el-form-item>
         <el-button type="primary" v-on:click="loginAction()">登录</el-button>
+        <el-button type="primary" @click="ownerEnrollVisible=true">房东注册</el-button>
       </el-form-item>
     </el-form>
+
+    <OwnerEnroll v-if="ownerEnrollVisible" :addFormVisible = "ownerEnrollVisible" @closeOwnerEnroll = "ownerEnrollVisible = false"></OwnerEnroll>
   </div>
 </template>
 
 <script>
 import config from "@/assets/config";
+import OwnerEnroll from "./OwnerEnroll.vue"
+
 var url = config.url;
 export default {
   name: "logIn",
@@ -56,6 +61,9 @@ export default {
         areacontrol: false,
       },
       loading: false,
+
+      //房东注册页面
+      ownerEnrollVisible:false
     };
   },
   methods: {
@@ -103,6 +111,8 @@ export default {
       }
     },
   },
+
+  components:{ OwnerEnroll }
 };
 </script>
 

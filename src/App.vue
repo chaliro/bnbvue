@@ -1568,7 +1568,7 @@ axios.delete( config_url+'/product/'+e, {
   mounted() {
     //从浏览器获取购物车
     let item=localStorage.getItem("cart");
-    if(!typeof(item)!= undefined){
+    if(!typeof(item)!= "undefined"){
       this.cart = JSON.parse(item);
     }else{
       this.cart=[];
@@ -1601,6 +1601,7 @@ axios.delete( config_url+'/product/'+e, {
       this.tempInfo=user;
       //如果是owner登录
       if(usertype=="owner"){
+        console.log("owner登录")
         this.ownerId=user.id;
         this.ownerInfoObj=user;
       }
