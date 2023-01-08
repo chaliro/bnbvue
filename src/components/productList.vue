@@ -57,6 +57,11 @@
               >添加进入购物车</el-button
             >
           </div>
+          <div class="chatButton">
+            <el-button type="success"  @click="chat(item)" round
+              >联系卖家</el-button
+            >
+          </div>
         </div>
         <el-divider></el-divider>
       </li>
@@ -105,6 +110,11 @@ export default {
     },
   },
   methods: {
+
+    //与商家联系
+    chat(item){
+      this.$bus.$emit('chatFromProductList',item);
+    },
     //导出为pdf
     saveAsPDF() {
       this.$PDFSave(this.$refs.lists, "商品");
@@ -181,7 +191,7 @@ li {
   margin: auto;
   border: 1px solid black;
   height: 100px;
-  width: 1200px;
+  width: 1300px;
 }
 .itemImage {
   float: left;
@@ -219,6 +229,13 @@ li {
   float: left;
   height: 35px;
   width: 180px;
+  margin-top: 30px;
+}
+
+.chatButton {
+  float: left;
+  height: 35px;
+  width: 80px;
   margin-top: 30px;
 }
 </style>

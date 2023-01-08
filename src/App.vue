@@ -30,6 +30,7 @@
               <el-menu-item index="1-2">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
+              <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
               <el-menu-item index="1-5" @click="showChatWindow">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -279,8 +280,12 @@
           <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
           <productListVue v-if="state.show_products_state"></productListVue>
           <cartWindow v-if="state.show_cart_state"></cartWindow>
+          <!--后台管理-用户信息-->
+          <user-info v-if="this.state.show_backUserInfo_state"></user-info>
           <!--后台管理-房源信息-->
-          <house-info v-if="this.state.show_BackHomeStayInfo_state"></house-info>
+          <house-info v-if="this.state.show_backHomeStayInfo_state"></house-info>
+          <!--后台管理-评论信息-->
+          <comment-info v-if="this.state.show_backCommentInfo_state"></comment-info>
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
 
@@ -604,11 +609,15 @@ import chatMainVue from "./components/chatMain.vue";
 import logInVue from "./components/logIn.vue";
 import productListVue from "./components/productList.vue";
 import cartWindow from "./components/cartWindow.vue";
+import HouseInfo from "./components/HouseInfo.vue";
+import UserInfo from "./components/UserInfo.vue";
+import CommentInfo from "./components/CommentInfo.vue";
+
 var config_url = config.url;
 const echarts = require('echarts');
 export default {
   name: "App",
-  components: { chatMainVue, logInVue, productListVue, cartWindow },
+  components: { chatMainVue, logInVue, productListVue, cartWindow, HouseInfo, UserInfo, CommentInfo },
   methods: {
     initCharts () {
         let myChart = this.$echarts.init(this.$refs.chart);
@@ -1432,7 +1441,7 @@ axios.delete( config_url+'/product/'+e, {
     showBackHomeStayInfo(){
       this.loading = true;
       this.state = {
-        show_BackHomeStayInfo_state:true
+        show_backHomeStayInfo_state:true
       }
       this.loading = false;
     },
@@ -1443,6 +1452,22 @@ axios.delete( config_url+'/product/'+e, {
       this.loading=false
       
     
+    },
+    //后台管理 用户信息
+    showBackUserInfo(){
+      this.loading = true;
+      this.state = {
+        show_backUserInfo_state:true
+      }
+      this.loading = false;
+    },
+    //后台管理 评论信息
+    showBackCommentInfo(){
+      this.loading = true;
+      this.state = {
+        show_backCommentInfo_state:true
+      }
+      this.loading = false;
     }
   },
   data() {
@@ -1509,7 +1534,11 @@ axios.delete( config_url+'/product/'+e, {
          //显示后台管理 房东信息
         show_allOwnerInfo_state:false,
         //显示后台管理 房源信息
-        show_BackHomeStayInfo_state:false,
+        show_backHomeStayInfo_state:false,
+        //显示后台管理 用户信息
+        show_backUserInfo_state:false,
+        //显示后台管理 评论信息
+        show_backCommentInfo_state:false,
          //显示房东管理 产品信息
         show_ownerProducts_state:false,
         //显示聊天框
@@ -1557,16 +1586,34 @@ axios.delete( config_url+'/product/'+e, {
     }
   },
   mounted() {
+     /*
+    //从浏览器获取购物车
+    this.cart = JSON.parse(localStorage.getItem("cart"));
+    if (this.cart == null) this.cart = [];
+    */
 
-    
-    // //从浏览器获取购物车
-    // this.cart = JSON.parse(localStorage.getItem("cart"));
-    // if (this.cart == null) this.cart = [];
+    //绑定事件，从购物车与商家联系
+    this.$bus.$on('chatFromProductList',(item)=>{
+      this.showChatWindow();
+      this.$axios.get(`${config_url}/owner/product/find/${item.id}`).then(res=>{
+        if(res.data.flag==false){
+          this.$message.error("服务器连接失败");
+        }else{
+          var id=res.data.data;
+          setTimeout(() => {
+            this.$bus.$emit("addChater",id);
+          }, 500);
+        }
+      })
+
+    })
 
     //绑定事件，登录组件触发时生效
     this.$bus.$on("login", (user, usertype) => {
       console.log("object :>> ");
+      
       this.login_state = true;
+      console.log('this.login_state :>> ', this.login_state);
       //用户登录相关信息从loginIn组件传递
       //如果是owner登录
       if(usertype=="owner"){
@@ -1617,6 +1664,7 @@ axios.delete( config_url+'/product/'+e, {
   beforeDestroy() {
     this.$bus.$off("login");
     this.$bus.$off("addProductToCart");
+    this.$bus.$off("chatFromProductList");
     //存储购物车
     localStorage.setItem("cart", JSON.stringify(this.cart));
   },

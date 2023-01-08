@@ -92,6 +92,11 @@ export default {
   mounted() {
     //挂载事件，当切换聊天对象时，将现有聊天框的内容存储下来,10s 轮询一次
     this.$bus.$on("backInfo", this.receiverFormSon);
+
+    //当添加聊天对象时
+    this.$bus.$on("addChater",(id)=>{
+      this.pepolesWithChat.push(this.createPeople(id));
+    })
     this.$bus.$on("chatWindow", (fromId) => {
       this.fromId = fromId.toString();
     });
@@ -102,6 +107,7 @@ export default {
   beforeDestroy() {
     //销毁挂载
     this.$bus.$off("backInfo");
+    this.$bus.$off("addChater");
     this.$bus.$off("chatWindow");
   },
 };
