@@ -350,6 +350,7 @@
                   @click="unOrderHomestay(scope.row)"
                 ></el-button>
                 <el-button
+                :disabled="scope.row.success"
                   type="success"
                   icon="el-icon-check"
                   circle
@@ -755,6 +756,7 @@ export default {
           
           for(let i in response.data.data){
             response.data.data[i].order=false;
+            response.data.data[i].success=false;
           }
           _this.state = {
             show_homestay_state: true,
@@ -811,16 +813,38 @@ export default {
 
     //预定房间
     bookHomeStay(){
+      this.loading=true;
       let homeId=[];
       for(let i in this.homestayInfo){
-        homeId.push(this.homestayInfo[i].id);
-      }
-      this.$axiso.post(`${config_url}/homestay/book`,{
-        data:{
-          homeId:homeId
+        if(this.homestayInfo[i].order){
+          homeId.push(this.homestayInfo[i].id);
         }
-      }).then(res=>{
-
+      }
+      this.$axios({
+        url:`${config_url}/homestay/book`,
+        method:"post",
+        data:homeId
+    }).then(res=>{
+        let success=res.data.data;
+        for(let i in success){
+          for(let j in this.homestayInfo){
+            if(success[i]==this.homestayInfo[j].id){
+              this.homestayInfo[j].success=true;
+              this.homestayInfo[j].order=false;
+            }
+          }
+        }
+        this.$message({
+          type: 'success',
+          message:`${success}号商品订购成功！剩下可删除的就是订购失败的哦！`
+        })
+        this.loading=false;
+      }).catch(e=>{
+        this.loading=false;
+        this.$message({
+          type: 'error',
+          message:e
+        })
       })
     },
 
