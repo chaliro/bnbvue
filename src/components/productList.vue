@@ -22,8 +22,28 @@
       style="float: right"
       @click="saveAsPDF()"
       icon="el-icon-download"
-      >导出</el-button
+      >导出pdf</el-button
     >
+
+    <download-excel
+      types="xls"
+      :data="products"
+      :fields="fields"
+      :name="exportName"
+      :worksheet="exportSheet"
+      :header="exportHeader"
+      :footer="exportFooter"
+      :defaultValue="exportDefaultValue"
+    >
+      <el-button
+        type="success"
+        round
+        icon="el-icon-download"
+        style="float: right"
+        >导出Excel</el-button
+      >
+    </download-excel>
+
     <div style="float: right; width: 20px; height: 10px"></div>
     <el-button
       type="success"
@@ -32,6 +52,14 @@
       v-print="printObj"
       icon="el-icon-download"
       >打印</el-button
+    >
+    <div style="float: right; width: 20px; height: 10px"></div>
+    <el-button type="success" round style="float: right" @click="sort(1)"
+      >数量升序</el-button
+    >
+    <div style="float: right; width: 20px; height: 10px"></div>
+    <el-button type="success" round style="float: right" @click="sort(-1)"
+      >数量降序</el-button
     >
 
     <div style="height: 20px"></div>
@@ -44,7 +72,7 @@
       infinite-scroll-disabled="disabled"
     >
       <!-- eslint-disable-next-line vue/valid-v-for -->
-      <li v-for="item in products" :key="index" class="list-item">
+      <li v-for="item in products" :key="item.id" class="list-item">
         <div class="item">
           <img class="itemImage" :src="item.img" />
           <div class="itemInfo">
@@ -58,7 +86,7 @@
             >
           </div>
           <div class="chatButton">
-            <el-button type="success"  @click="chat(item)" round
+            <el-button type="success" @click="chat(item)" round
               >联系卖家</el-button
             >
           </div>
@@ -78,6 +106,16 @@ export default {
   name: "productList",
   data() {
     return {
+      fields: {
+        编号: "id",
+        商品名称: "name",
+        图片: "img",
+        描述: "description",
+        现有数量: "countNow",
+      },
+      exportName: "商品列表",
+      exportSheet: "商品列表",
+
       userId: -1,
       products: [],
       page: 0,
@@ -110,10 +148,32 @@ export default {
     },
   },
   methods: {
+    //排序 字典序 参数s==1 升序 s==-1 降序
+    sort(s) {
+      console.log("s :>> ", s);
+      let temp = this.products;
+      this.products = null;
+      if (s == 1) {
+        temp.sort((a, b) => {
+          if (a.countNow == b.countNow) return 0;
+          return a.countNow > b.countNow ? 1 : -1;
+        });
+        console.log("temp :>> ", temp);
+      } else {
+        temp.sort((a, b) => {
+          if (a.countNow == b.countNow) return 0;
+          return a.countNow < b.countNow ? 1 : -1;
+        });
+        console.log("temp :>> ", temp);
+      }
+      setTimeout(() => {
+        this.products = temp;
+      }, 100);
+    },
 
     //与商家联系
-    chat(item){
-      this.$bus.$emit('chatFromProductList',item);
+    chat(item) {
+      this.$bus.$emit("chatFromProductList", item);
     },
     //导出为pdf
     saveAsPDF() {

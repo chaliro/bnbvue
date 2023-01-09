@@ -3,13 +3,30 @@
     <div style="width: 200px; float: left"></div>
     <div style="width: 20px; float: left; height: 20px"></div>
 
+
+    <download-excel
+      types="xls"
+      :data="cart"
+      :fields="fields"
+      :name="exportName"
+      :worksheet="exportSheet"
+      :header="exportHeader"
+      :footer="exportFooter"
+      :defaultValue="exportDefaultValue"
+    >
+      <el-button  type="success"
+      round
+      icon="el-icon-download"
+      style="float: right">导出Excel</el-button>
+    </download-excel>
+    <div style="float: right; width: 20px; height: 10px"></div>
     <el-button
       type="success"
       round
       style="float: right"
       @click="saveAsPDF()"
       icon="el-icon-download"
-      >导出</el-button
+      >导出pdf</el-button
     >
     <div style="float: right; width: 20px; height: 10px"></div>
     <el-button
@@ -19,6 +36,22 @@
       v-print="printObj"
       icon="el-icon-download"
       >打印</el-button
+    >
+    <div style="float: right; width: 20px; height: 10px"></div>
+    <el-button
+      type="success"
+      round
+      style="float: right"
+      @click="sort(1)"
+      >数量降序</el-button
+    >
+    <div style="float: right; width: 20px; height: 10px"></div>
+    <el-button
+      type="success"
+      round
+      style="float: right"
+      @click="sort(-1)"
+      >数量升序</el-button
     >
     <div style="height: 30px"></div>
     <el-divider></el-divider>
@@ -68,6 +101,16 @@ export default {
   name: "cartWindow",
   data() {
     return {
+      fields: {
+        编号: "id",
+        商品名称: "name",
+        图片: "img",
+        描述: "description",
+        购买数量: "userCount",
+      },
+      exportName: "购物车商品列表",
+      exportSheet: "购物车商品列表",
+
       userId: -1,
       cart: [],
       loading: false,
@@ -92,6 +135,30 @@ export default {
     };
   },
   methods: {
+    //数量排序 s==1 升序 s==-1 降序
+    sort(s){
+      let temp=this.cart;
+      this.cart==null;
+      if(s==1){
+        temp.sort((a,b)=>{
+          if(a.userCount==b.userCount)
+          return 0;
+          else return a.userCount>b.userCount?1:-1;
+        }
+        )}
+      else{
+        temp.sort((a,b)=>{
+          if(a.userCount==b.userCount)
+          return 0;
+          else return a.userCount>b.userCount?-1:1;
+        }
+        )
+      }
+      setTimeout(() => {
+        this.cart=temp;
+      }, 100);
+    },
+
     //购买商品数量改变
     numberChange() {
       //短时间多次存储影响性能

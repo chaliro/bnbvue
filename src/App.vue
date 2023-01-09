@@ -27,7 +27,7 @@
             </template>
             <el-menu-item-group>
               <el-menu-item index="1-1">个人中心</el-menu-item>
-              <el-menu-item index="1-2">购物车</el-menu-item>
+              <el-menu-item index="1-2" @click="showCart">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
               <el-menu-item index="1-5" @click="showChatWindow">我的消息</el-menu-item>
@@ -74,7 +74,7 @@
               <span>驾驶舱</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="5" @click="show_Manager">驾驶舱界面</el-menu-item>
+              <el-menu-item index="5" @click="showCockpit">驾驶舱界面</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
 
@@ -285,9 +285,11 @@
           <house-info v-if="this.state.show_backHomeStayInfo_state"></house-info>
           <!--后台管理-评论信息-->
           <comment-info v-if="this.state.show_backCommentInfo_state"></comment-info>
+          <!-- 显示驾驶舱 -->
+          <cockpitWindowVue v-if="this.state.show_cockpit_state"></cockpitWindowVue>
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
-
+          
             <el-table-column prop="name" label="名字" width="120">
             </el-table-column>
 
@@ -611,31 +613,16 @@ import cartWindow from "./components/cartWindow.vue";
 import HouseInfo from "./components/HouseInfo.vue";
 import UserInfo from "./components/UserInfo.vue";
 import CommentInfo from "./components/CommentInfo.vue";
+import cockpitWindowVue from "./components/cockpitWindow.vue";
+
 
 var config_url = config.url;
 const echarts = require('echarts');
 export default {
   name: "App",
-  components: { chatMainVue, logInVue, productListVue, cartWindow, HouseInfo, UserInfo, CommentInfo },
+  components: { chatMainVue, logInVue, productListVue, cartWindow, HouseInfo, UserInfo, CommentInfo,cockpitWindowVue },
   methods: {
-    initCharts () {
-        let myChart = this.$echarts.init(this.$refs.chart);
-        // 绘制图表
-        myChart.setOption({
-            title: { text: '在Vue中使用echarts' },
-            tooltip: {},
-            xAxis: {
-                data: ["衬衫","羊毛衫","雪纺衫","裤子","高跟鞋","袜子"]
-            },
-            yAxis: {},
-            series: [{
-                name: '销量',
-                type: 'bar',
-                data: [5, 20, 36, 10, 10, 20]
-            }]
-        });
-      },
-    
+ 
     //显示用户个人中心
     showUserInfo(){
       var _this = this
@@ -728,7 +715,7 @@ export default {
     showCart() {
       //先等容器创建，再传递参数
       setTimeout(() => {
-        this.$bus.$emit("cartWindow", this.cart, this.userInfo);
+        this.$bus.$emit("cartWindow", this.cart, this.tempInfo);
       }, 500);
       this.state = {
         show_cart_state: true,
@@ -1471,6 +1458,16 @@ axios.delete( config_url+'/product/'+e, {
   },
   data() {
     return {
+      //undefined 数据,但是没有这个声明会进不去页面
+      controll_module:{
+        show_users:true,
+        show_owner:false,
+        show_controller:false,
+      },
+    
+      //临时保存数据，不要删除
+      tempInfo:null,
+
       //登录状态
       login_state: false,
 
@@ -1523,7 +1520,8 @@ axios.delete( config_url+'/product/'+e, {
       checkOwnerProductByNameVar:null,
    //控制页面跳转
       state: {
-      
+        //显示驾驶舱
+        show_cockpit_state: false,
         //显示民宿管理 房源信息
         show_homestay_state: false,
         //显示房东管理 个人中心
@@ -1560,7 +1558,7 @@ axios.delete( config_url+'/product/'+e, {
       //用来控制民宿管理 房源信息 的订购
       order: false,
       //用来表示 页面加载时的动画
-      loading: true,
+      loading: false,
       //用来控制房东添加或者修改产品的弹出框
       addProducts: false,
       //表示添加产品时对应的房源名字
@@ -1585,11 +1583,15 @@ axios.delete( config_url+'/product/'+e, {
     }
   },
   mounted() {
-     /*
+    
     //从浏览器获取购物车
-    this.cart = JSON.parse(localStorage.getItem("cart"));
-    if (this.cart == null) this.cart = [];
-    */
+    let item=localStorage.getItem("cart");
+    if(!typeof(item)!= "undefined"){
+      this.cart = JSON.parse(item);
+    }else{
+      this.cart=[];
+    }
+    
 
     //绑定事件，从购物车与商家联系
     this.$bus.$on('chatFromProductList',(item)=>{
@@ -1614,8 +1616,10 @@ axios.delete( config_url+'/product/'+e, {
       this.login_state = true;
       console.log('this.login_state :>> ', this.login_state);
       //用户登录相关信息从loginIn组件传递
+      this.tempInfo=user;
       //如果是owner登录
       if(usertype=="owner"){
+        console.log("owner登录")
         this.ownerId=user.id;
         this.ownerInfoObj=user;
         this.controll_module = {show_owner:true};
