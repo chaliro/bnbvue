@@ -298,6 +298,9 @@
             </el-dropdown-menu>
           </el-dropdown>
           <span>{{ userName }}</span>
+          <!--注销房东账号按钮-->
+          <el-button v-if="!(this.ownerId%2)" @click="state.show_logoutOwner_state=true">注销房东账号</el-button>
+          <LogoutOwner v-if="state.show_logoutOwner_state" :id="this.ownerId" :deleteFormVisible = "state.show_logoutOwner_state" @closeLogoutOwner = "state.show_logoutOwner_state = false, login_state=false"/>
         </el-header>
         <!-- 主页面 -->
         <el-main v-loading="loading" id="printMe">
@@ -655,7 +658,7 @@
 
 <script>
 import axios from "axios";
-import config from "./assets/config";
+import config from "./assets/config";HouseInfo
 import chatMainVue from "./components/chatMain.vue";
 import logInVue from "./components/logIn.vue";
 import productListVue from "./components/productList.vue";
@@ -664,6 +667,7 @@ import HouseInfo from "./components/HouseInfo.vue";
 import UserInfo from "./components/UserInfo.vue";
 import CommentInfo from "./components/CommentInfo.vue";
 import cockpitWindowVue from "./components/cockpitWindow.vue";
+import LogoutOwner from "./components/LogoutOwner.vue";
 
 var config_url = config.url;
 export default {
@@ -677,7 +681,8 @@ export default {
     UserInfo,
     CommentInfo,
     cockpitWindowVue,
-  },
+    LogoutOwner
+},
   methods: {
     //显示驾驶舱
     showCockpit() {
@@ -1704,6 +1709,9 @@ export default {
         show_ownerProducts_state: false,
         //显示聊天框
         show_chat_window_state: false,
+
+        //展示房东注销界面
+        show_logoutOwner_state:false,
       },
       //用户Id
       userId: null,
@@ -1742,7 +1750,7 @@ export default {
   mounted() {
     //从浏览器获取购物车
     let item = localStorage.getItem("cart");
-    if (typeof item == "undefined") {
+    if (typeof item != undefined) {
       this.cart = JSON.parse(item);
     } else {
       this.cart = [];
