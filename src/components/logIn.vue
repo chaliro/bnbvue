@@ -25,7 +25,7 @@
       <el-radio-group v-model="loginType">
         <el-radio label="user">普通用户</el-radio>
         <el-radio label="owner">房东</el-radio>
-        <el-radio label="conrtoller">管理人员</el-radio>
+        <el-radio label="controller">管理人员</el-radio>
       </el-radio-group>
       <el-divider></el-divider>
       <div>

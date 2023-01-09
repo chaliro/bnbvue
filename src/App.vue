@@ -268,8 +268,8 @@
           <el-dropdown>
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item  v-print="printObj">导出</el-dropdown-item>
-              <el-dropdown-item>统计</el-dropdown-item>
+              <el-dropdown-item  v-print="printObj">打印</el-dropdown-item>
+              <el-dropdown-item @click="printExcel">导出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
           <span>{{ userName }}</span>
@@ -640,6 +640,17 @@ export default {
         .catch(function (error) {// 请求失败
           console.log(error);
         });
+    },
+    //导出excel
+    printExcel(){
+        // 创建工作表
+        const data = XLSX.utils.json_to_sheet(this.ownerInfo)
+        // 创建工作簿
+        const wb = XLSX.utils.book_new()
+        // 将工作表放入工作簿中
+        XLSX.utils.book_append_sheet(wb, data, 'data')
+        // 生成文件并下载
+        XLSX.writeFile(wb, 'comment.xlsx')
     },
     //修改用户个人中心
     modifyUserInfo(){
@@ -1586,7 +1597,7 @@ axios.delete( config_url+'/product/'+e, {
     
     //从浏览器获取购物车
     let item=localStorage.getItem("cart");
-    if(!typeof(item)!= "undefined"){
+    if(typeof item!= undefined){
       this.cart = JSON.parse(item);
     }else{
       this.cart=[];
