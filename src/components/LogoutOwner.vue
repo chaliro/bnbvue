@@ -35,7 +35,13 @@ export default {
 
         handleDelete(){
             let _this = this;
-            let url = 'http://localhost:8080/owner/' + this.id;
+            let url = '';
+            console.log('注销id：' + this.id)
+            if(this.id%2 == 1){
+                url = 'http://localhost:8080/user/' + this.id;
+            }else{
+                url = 'http://localhost:8080/owner/' + this.id;
+            }
             axios({
                 method: 'DELETE',
                 url: url,

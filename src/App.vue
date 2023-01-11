@@ -58,11 +58,11 @@
               <span>后台管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="4-1">用户信息</el-menu-item>
+              <el-menu-item index="4-1" @click="showBackUserInfo">用户信息</el-menu-item>
               <el-menu-item index="4-2" @click="showAllOwnerInfo">房东信息</el-menu-item>
               <el-menu-item index="4-3" @click="showBackHomeStayInfo">房源信息</el-menu-item>
               <el-menu-item index="4-4">农产品信息</el-menu-item>
-              <el-menu-item index="4-5">查看评价</el-menu-item>
+              <el-menu-item index="4-5" @click="showBackCommentInfo">查看评价</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
           <el-submenu index="5">
@@ -263,9 +263,9 @@
             </el-dropdown-menu>
           </el-dropdown>
           <span>{{ userName }}</span>
-          <!--注销房东账号按钮-->
-          <el-button v-if="!(this.ownerId%2)" @click="state.show_logoutOwner_state=true">注销房东账号</el-button>
-          <LogoutOwner v-if="state.show_logoutOwner_state" :id="this.ownerId" :deleteFormVisible = "state.show_logoutOwner_state" @closeLogoutOwner = "state.show_logoutOwner_state = false, login_state=false"/>
+          <!--注销账号按钮-->
+          <el-button @click="state.show_logoutAccount_state=true">注销账号</el-button>
+          <LogoutOwner v-if="state.show_logoutAccount_state" :id="this.ownerId" :deleteFormVisible = "state.show_logoutAccount_state" @closeLogoutOwner = "state.show_logoutAccount_state = false, login_state=false"/>
         </el-header>
         <!-- 主页面 -->
         <el-main v-loading="loading" id="printMe">
@@ -2081,8 +2081,10 @@ export default {
         //显示用户个人中心
         show_userInfo_state:false,
 
+        //用户注销
+        show_logoutUser_state:false,
         //展示房东注销界面
-        show_logoutOwner_state:false,
+        show_logoutAccount_state:false,
       },
       //用户Id
       userId: null,
