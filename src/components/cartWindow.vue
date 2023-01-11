@@ -14,7 +14,7 @@
       :footer="exportFooter"
       :defaultValue="exportDefaultValue"
     >
-      <el-button  type="success"
+      <el-button type="success"
       round
       icon="el-icon-download"
       style="float: right">导出Excel</el-button>
