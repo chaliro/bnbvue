@@ -7,9 +7,10 @@ import JsonExcel from "vue-json-excel";
 import Print from 'vue-print-nb';
 import vueToPdf from 'vue-to-pdf';
 import * as echarts from 'echarts'
+
 Vue.prototype.$echarts = echarts
 Vue.use(vueToPdf);
-
+Vue.component('downloadExcel', JsonExcel)
 Vue.config.productionTip = false
 Vue.prototype.$axios = axios
 Vue.use(ElementUI);

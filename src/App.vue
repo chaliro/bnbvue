@@ -30,7 +30,7 @@
               <el-menu-item index="1-2" @click="showCart">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
-              <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
+            
               <el-menu-item index="1-5" @click="showChatWindow">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -81,7 +81,7 @@
               <el-menu-item index="4-3" @click="showBackHomeStayInfo"
                 >房源信息</el-menu-item
               >
-              <el-menu-item index="4-4">农产品信息</el-menu-item>
+              <el-menu-item index="4-4" @click="showAllProduct">农产品信息</el-menu-item>
               <el-menu-item index="4-5">查看评价</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
@@ -103,6 +103,116 @@
       <el-container>
         <!-- 顶部信息 -->
         <el-header style="text-align: right; font-size: 12px">
+          <div class="button" v-if="state.show_ownerInfo_state" @click="ownerInfoToArry">
+        <download-excel
+          class="export-excel-wrapper"
+      :data="ownerInfoArry"
+      :fields="ownerInfoFields"
+      type="xls"
+      worksheet="My Worksheet"
+      name="房东个人信息">
+          <el-button
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >导出Excel</el-button>
+        </download-excel>
+        <el-button  v-print="printObj"
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >打印</el-button>
+      </div>
+      <div class="button" v-if="state.show_ownerHomestay_state">
+        <download-excel
+          class="export-excel-wrapper"
+      :data="ownerHomestay"
+      :fields="ownerHomestayFieds"
+      type="xls"
+      worksheet="My Worksheet"
+      name="我的房源">
+          <el-button
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >导出Excel</el-button>
+        </download-excel>
+        <el-button  v-print="printObj"
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >打印</el-button>
+      </div>
+      <div class="button" v-if="state.show_ownerProducts_state">
+        <download-excel
+          class="export-excel-wrapper"
+      :data="ownerProducts"
+      :fields="ProductsFields"
+      type="xls"
+      worksheet="My Worksheet"
+      name="我的农产品">
+          <el-button
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >导出Excel</el-button>
+        </download-excel>
+        <el-button  v-print="printObj"
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >打印</el-button>
+      </div>
+      <div class="button" v-if="state.show_allproducts_state">
+        <download-excel
+          class="export-excel-wrapper"
+      :data="allProducts"
+      :fields="ProductsFields"
+      type="xls"
+      worksheet="My Worksheet"
+      name="农产品信息">
+          <el-button
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >导出Excel</el-button>
+        </download-excel>
+        <el-button  v-print="printObj"
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >打印</el-button>
+      </div>
+      <div class="button" v-if="state.show_allOwnerInfo_state">
+        <download-excel
+          class="export-excel-wrapper"
+      :data="allOwnerInfo"
+      :fields="ownerInfoFields"
+      type="xls"
+      worksheet="My Worksheet"
+      name="房东信息">
+          <el-button
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >导出Excel</el-button>
+        </download-excel>
+        <el-button  v-print="printObj"
+            type="info"
+            round
+            icon="el-icon-download"
+            style="float: left;margin-top: 0.5%;"
+            >打印</el-button>
+      </div>
           <!-- 民宿管理 房源界面 的 搜索框 -->
           <div style="width: 1000px" v-if="state.show_homestay_state">
             <el-input
@@ -230,8 +340,59 @@
               >按名字降序</el-button
             >
           </div>
-          <!-- 房东管理 产品界面 搜索框 -->
-          <div style="width: 1000px" v-if="state.show_ownerProducts_state">
+          <!-- 后台管理 产品界面 搜索框 -->
+          <div style="width: 1000px" v-if="state.show_allproducts_state">
+            <el-input
+              placeholder="请输入名字"
+              suffix-icon="el-icon-date"
+              style="width: 200px; float: left"
+              v-model="checkOwnerProductByNameVar"
+            >
+            </el-input>
+
+            <el-button
+              @click="checkAllProductByName"
+              type="primary"
+              style="
+                float: left;
+                margin-top: 11px;
+                margin-left: 20px;
+                background-color: white;
+                border: solid 0px;
+                color: rgb(179, 192, 209);
+              "
+            >
+              查询</el-button
+            >
+            <el-button
+              @click="allProductAESCBYname"
+              type="primary"
+              style="
+                float: left;
+                margin-top: 11px;
+                margin-left: 20px;
+                background-color: white;
+                border: solid 0px;
+                color: rgb(179, 192, 209);
+              "
+              >按名字升序</el-button
+            >
+            <el-button
+              @click="allProductDESCBYname"
+              type="primary"
+              style="
+                float: left;
+                margin-top: 11px;
+                margin-left: 20px;
+                background-color: white;
+                border: solid 0px;
+                color: rgb(179, 192, 209);
+              "
+              >按名字降序</el-button
+            >
+          </div>
+           <!-- 房东管理 产品界面 搜索框 -->
+           <div style="width: 1000px" v-if="state.show_ownerProducts_state">
             <el-input
               placeholder="请输入名字"
               suffix-icon="el-icon-date"
@@ -285,8 +446,8 @@
           <el-dropdown>
             <i class="el-icon-setting" style="margin-right: 15px"></i>
             <el-dropdown-menu slot="dropdown">
-              <el-dropdown-item  v-print="printObj">打印</el-dropdown-item>
-              <el-dropdown-item @click="printExcel">导出</el-dropdown-item>
+              <!-- <el-dropdown-item  v-print="printObj">打印</el-dropdown-item>
+              <el-dropdown-item @click="printExcel">导出</el-dropdown-item> -->
             </el-dropdown-menu>
           </el-dropdown>
           <span>{{ userName }}</span>
@@ -431,6 +592,15 @@
                   autocomplete="off"
                   :width="100"
                 ></el-input>
+                <!-- <el-time-picker
+    is-range
+    v-model="value1"
+    range-separator="至"
+    start-placeholder="开始时间"
+    end-placeholder="结束时间"
+    placeholder="选择时间范围">
+  </el-time-picker>
+   -->
               </el-form-item>
               <el-form-item label="总数" :label-width="10">
                 <el-input
@@ -440,11 +610,19 @@
                 ></el-input>
               </el-form-item>
               <el-form-item label="状态" :label-width="10">
-                <el-input
+                <!-- <el-input
                   v-model="ownerHomestayObj.state"
                   autocomplete="off"
                   :width="100"
-                ></el-input>
+                ></el-input> -->
+                <el-select v-model="ownerHomestayObj.state" placeholder="请选择">
+    <el-option
+      v-for="item in options"
+      :key="item.value"
+      :label="item.label"
+      :value="item.value">
+    </el-option>
+  </el-select>
               </el-form-item>
               <el-form-item label="描述" :label-width="10">
                 <el-input
@@ -567,6 +745,30 @@
               </template>
             </el-table-column>
           </el-table>
+           <!-- 后台管理 显示农产品 -->
+           <el-table v-if="state.show_allproducts_state" :data="allProducts">
+            <el-table-column prop="name" label="名字" width="120">
+            </el-table-column>
+
+            <el-table-column prop="countNow" label="剩余" width="120">
+            </el-table-column>
+            <el-table-column prop="description" label="描述" width="500">
+            </el-table-column>
+            <el-table-column width="100">
+              <template slot-scope="id">
+                <el-button type="primary" @click="changeProducts(id.row.id)"
+                  >修改</el-button
+                >
+              </template>
+            </el-table-column>
+            <el-table-column width="100">
+              <template slot-scope="id">
+                <el-button type="danger" @click="deleteProducts(id.row.id)"
+                  >删除</el-button
+                >
+              </template>
+            </el-table-column>
+          </el-table>
           <!-- 产品添加界面 -->
 
           <el-dialog title="产品信息" :visible.sync="addProducts">
@@ -665,6 +867,7 @@ import UserInfo from "./components/UserInfo.vue";
 import CommentInfo from "./components/CommentInfo.vue";
 import cockpitWindowVue from "./components/cockpitWindow.vue";
 
+
 var config_url = config.url;
 const echarts = require('echarts');
 export default {
@@ -680,7 +883,127 @@ export default {
     cockpitWindowVue,
   },
   methods: {
- 
+    ownerInfoToArry(){
+      this.ownerInfoArry= [
+        this.ownerInfo
+      ]
+    },
+    allProductAESCBYname(){
+      var _this = this;
+      if (
+        _this.checkOwnerProductByNameVar == null ||
+        _this.checkOwnerProductByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/product/aesc", {})
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url +
+              "/product/aescbyname/" +
+              _this.checkOwnerProductByNameVar,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      }
+    },
+    allProductDESCBYname(){
+      var _this = this;
+      if (
+        _this.checkOwnerProductByNameVar == null ||
+        _this.checkOwnerProductByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/product/desc", {})
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url +
+              "/product/descbyname/" +
+              _this.checkOwnerProductByNameVar,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      }
+    },
+    checkAllProductByName(){
+      var _this = this;
+      axios
+        .get(
+          config_url + "/product/getByName/" + _this.checkOwnerProductByNameVar,
+          {}
+        )
+        .then(function (response) {
+          // 请求成功
+          console.log(response);
+          _this.allProducts = response.data.data;
+          _this.$message({
+            message: "查询成功",
+            type: "success",
+          });
+        })
+        .catch(function (error) {
+          // 请求失败
+          console.log(error);
+          _this.$message({
+            message: "查询失败",
+            type: "error",
+          });
+        });
+    },
+    showAllProduct(){
+      var _this = this;
+      _this.loading = true;
+      axios
+        .get(config_url + "/product" , {})
+        .then(function (response) {
+          // 请求成功
+          console.log(response);
+          _this.allProducts = response.data.data;
+          _this.state = {
+            show_allproducts_state:true
+          };
+          _this.loading = false;
+        })
+        .catch(function (error) {
+          // 请求失败
+          console.log(error);
+        });
+    },
     //显示驾驶舱
     showCockpit(){
       this.state = {
@@ -924,6 +1247,15 @@ export default {
     //控制房东管理 房源信息 添加或者修改的确定按钮提交信息
     submitAddHomestay() {
       var _this = this;
+      if(_this.ownerHomestayObj.name == "" ||_this.ownerHomestayObj.name == null || _this.ownerHomestayObj.location==null || _this.ownerHomestayObj.location=="" || _this.ownerHomestayObj.time == null|| _this.ownerHomestayObj.time == ""
+      || _this.ownerHomestayObj.countTotal==0 ||_this.ownerHomestayObj.state == null ||_this.ownerHomestayObj.state == ""|| _this.ownerHomestayObj.description==null|| _this.ownerHomestayObj.description=="")
+      {
+        _this.$message({
+              message: "输入不能为空",
+              type: "error",
+            });
+      }
+      else{
       if (
         _this.ownerHomestayObj.id == null ||
         _this.ownerHomestayObj.id == ""
@@ -975,7 +1307,7 @@ export default {
             _this.ownerAddHomestay = false;
             _this.showOwnerHomestay();
           });
-      }
+      }}
     },
     //控制房东管理 房源信息 修改界面
     changeHomestay(e) {
@@ -1198,7 +1530,7 @@ export default {
       var _this = this;
       _this.loading = true;
       axios
-        .get(config_url + "/product", {})
+        .get(config_url + "/product/getAll/"+_this.ownerId, {})
         .then(function (response) {
           // 请求成功
           console.log(response);
@@ -1240,6 +1572,16 @@ export default {
     submitAddProducts() {
       console.log(this.homeId);
       var _this = this;
+
+      if(_this.productsObj.countTotal ==0 || _this.productsObj.description==null|| _this.productsObj.description==""||
+      _this.productsObj.name==null||_this.productsObj.img==null||_this.productsObj.img==""||_this.productsObj.name=="")
+      {
+        _this.$message({
+              message: "输入不能为空",
+              type: "error",
+            });
+      }
+      else{
       if (this.productsObj.id == null || this.productsObj.id == "") {
         _this.productsObj.id = _this.homeId;
         axios
@@ -1285,9 +1627,14 @@ export default {
           })
           .finally(function () {
             _this.addProducts = false;
-            _this.showOwnerProducts();
+            if(_this.state.show_ownerProducts_state){
+            _this.showOwnerProducts();}
+            if(_this.state.show_allproducts_state){
+              _this.showAllProduct()
+            }
           });
       }
+    }
     },
     //后台管理 房东页面 搜索框
     checkOwnerByName() {
@@ -1354,7 +1701,12 @@ export default {
           });
         })
         .finally(function () {
+          if(_this.state.show_ownerProducts_state== true){
           _this.showOwnerProducts();
+          }
+          if(_this.state.show_allproducts_state){
+            _this.showAllProduct()
+          }
           _this.checkOwnerProductByNameVar = null;
         });
     },
@@ -1363,7 +1715,7 @@ export default {
       var _this = this;
       axios
         .get(
-          config_url + "/product/getByName/" + _this.checkOwnerProductByNameVar,
+          config_url + "/product/getByName/" + _this.checkOwnerProductByNameVar+"/"+_this.ownerId,
           {}
         )
         .then(function (response) {
@@ -1541,7 +1893,7 @@ export default {
         _this.checkOwnerProductByNameVar == ""
       ) {
         axios
-          .get(config_url + "/product/aesc", {})
+          .get(config_url + "/product/aesc"+"/"+_this.ownerId, {})
           .then(function (response) {
             // 请求成功
             console.log(response);
@@ -1556,7 +1908,7 @@ export default {
           .get(
             config_url +
               "/product/aescbyname/" +
-              _this.checkOwnerProductByNameVar,
+              _this.checkOwnerProductByNameVar+"/"+_this.ownerId,
             {}
           )
           .then(function (response) {
@@ -1578,7 +1930,7 @@ export default {
         _this.checkOwnerProductByNameVar == ""
       ) {
         axios
-          .get(config_url + "/product/desc", {})
+          .get(config_url + "/product/desc"+"/"+_this.ownerId, {})
           .then(function (response) {
             // 请求成功
             console.log(response);
@@ -1593,7 +1945,7 @@ export default {
           .get(
             config_url +
               "/product/descbyname/" +
-              _this.checkOwnerProductByNameVar,
+              _this.checkOwnerProductByNameVar+"/"+_this.ownerId,
             {}
           )
           .then(function (response) {
@@ -1642,7 +1994,16 @@ export default {
   },
   data() {
     return {
+      options: [{
+          value: '营业中',
+          label: '营业中'
+        }, {
+          value: '暂未营业',
+          label: '暂未营业'
+        }],
 
+        // value1: [new Date(2016, 9, 10, 8, 40), new Date(2016, 9, 10, 9, 40)],
+  
       //undefined 数据,但是没有这个声明会进不去页面
       controll_module: {
         show_users: true,
@@ -1662,6 +2023,7 @@ export default {
       homestayInfo: [],
       //房东房源数组
       ownerHomestay: [],
+
       //房东产品数组
       ownerProducts: [],
       //房东房源对象
@@ -1674,6 +2036,15 @@ export default {
         countTotal: "",
         state: "",
         description: "",
+      },
+      ownerHomeStayFieds:{
+        名字:"name",
+        位置:"location",
+        营业时间:"time",
+        剩余总数:"countNow",
+        总数:"countTotal",
+        状态:"state",
+        描述:"description"
       },
       //后台管理 添加修改 需要使用的房东信息对象
       ownerInfoObj: {
@@ -1692,6 +2063,13 @@ export default {
         countNow: "",
         countTotal: "",
         img: "",
+      },
+      ProductsFields: {
+       姓名 : "name",
+        描述: "description",
+        剩余: "countNow",
+        总数: "countTotal",
+        图片路径: "img",
       },
       //后台管理 所有房东信息
       allOwnerInfo: [],
@@ -1726,7 +2104,11 @@ export default {
         //显示聊天框
         show_chat_window_state:false,
         show_manager_state:false,
+        show_allproducts_state:false
       },
+      //所有产品
+      allProducts:[],
+      ownerInfoArry:[],
       //用户Id
       userId: null,
       //房东Id
@@ -1759,15 +2141,24 @@ export default {
         username: "",
         password: "",
       },
+      ownerInfoFields:{
+        账号:"id",
+        姓名:"name",
+        电话:"phone",
+        邮箱:"email",
+        用户名:"username",
+        密码:"password"
+      },
       controll_module:{
         show_users:false,
         show_owner:false,
         show_controller:false
-      }
+      },
+
     }
   },
   mounted() {
-    
+
     //从浏览器获取购物车
      let item=localStorage.getItem("cart");
     if(typeof item!= undefined){
