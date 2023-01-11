@@ -30,40 +30,57 @@
               <el-menu-item index="1-2" @click="showCart">购物车</el-menu-item>
               <el-menu-item index="1-3">我的评价</el-menu-item>
               <el-menu-item index="1-4">我的旅游攻略</el-menu-item>
+              <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
               <el-menu-item index="1-5" @click="showChatWindow">我的消息</el-menu-item>
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="2" v-if="controll_module.show_users==true">
+          <el-submenu index="2" v-if="controll_module.show_users == true">
             <template slot="title">
               <i class="el-icon-menu"></i>
               <span>民宿管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="2-1" @click="showHomestayInfo">房源信息</el-menu-item>
-              <el-menu-item index="2-2" @click="showProducts">农产品信息</el-menu-item>
+              <el-menu-item index="2-1" @click="showHomestayInfo"
+                >房源信息</el-menu-item
+              >
+              <el-menu-item index="2-2" @click="showProducts"
+                >农产品信息</el-menu-item
+              >
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="3" v-if="controll_module.show_owner==true">
+          <el-submenu index="3" v-if="controll_module.show_owner == true">
             <template slot="title">
               <i class="el-icon-document"></i>
               <span>房东管理</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="3-1" @click="showOwnerInfo">个人中心</el-menu-item>
-              <el-menu-item index="3-2" @click="showOwnerHomestay">我的房源</el-menu-item>
-              <el-menu-item index="3-4" @click="showChatWindow">我的消息</el-menu-item>
-              <el-menu-item index="3-3" @click="showOwnerProducts">我的农产品</el-menu-item>
+              <el-menu-item index="3-1" @click="showOwnerInfo"
+                >个人中心</el-menu-item
+              >
+              <el-menu-item index="3-2" @click="showOwnerHomestay"
+                >我的房源</el-menu-item
+              >
+              <el-menu-item index="3-4" @click="showChatWindow"
+                >我的消息</el-menu-item
+              >
+              <el-menu-item index="3-3" @click="showOwnerProducts"
+                >我的农产品</el-menu-item
+              >
             </el-menu-item-group>
           </el-submenu>
-          <el-submenu index="4" v-if="controll_module.show_controller==true">
+          <el-submenu index="4" v-if="controll_module.show_controller == true">
             <template slot="title">
               <i class="el-icon-setting"></i>
               <span>后台管理</span>
             </template>
             <el-menu-item-group>
               <el-menu-item index="4-1">用户信息</el-menu-item>
-              <el-menu-item index="4-2" @click="showAllOwnerInfo">房东信息</el-menu-item>
-              <el-menu-item index="4-3" @click="showBackHomeStayInfo">房源信息</el-menu-item>
+              <el-menu-item index="4-2" @click="showAllOwnerInfo"
+                >房东信息</el-menu-item
+              >
+              <el-menu-item index="4-3" @click="showBackHomeStayInfo"
+                >房源信息</el-menu-item
+              >
               <el-menu-item index="4-4">农产品信息</el-menu-item>
               <el-menu-item index="4-5">查看评价</el-menu-item>
             </el-menu-item-group>
@@ -74,13 +91,13 @@
               <span>驾驶舱</span>
             </template>
             <el-menu-item-group>
-              <el-menu-item index="5" @click="showCockpit">驾驶舱界面</el-menu-item>
+              <el-menu-item index="5" @click="showCockpit"
+                >驾驶舱界面</el-menu-item
+              >
             </el-menu-item-group>
           </el-submenu>
-
         </el-menu>
         <!-- </el-col> -->
-
       </el-aside>
 
       <el-container>
@@ -274,7 +291,7 @@
           </el-dropdown>
           <span>{{ userName }}</span>
         </el-header>
-<!-- 主页面 -->
+        <!-- 主页面 -->
         <el-main v-loading="loading" id="printMe">
           <chatMainVue v-if="state.show_chat_window_state"></chatMainVue>
           <productListVue v-if="state.show_products_state"></productListVue>
@@ -282,14 +299,19 @@
           <!--后台管理-用户信息-->
           <user-info v-if="this.state.show_backUserInfo_state"></user-info>
           <!--后台管理-房源信息-->
-          <house-info v-if="this.state.show_backHomeStayInfo_state"></house-info>
+          <house-info
+            v-if="this.state.show_backHomeStayInfo_state"
+          ></house-info>
           <!--后台管理-评论信息-->
-          <comment-info v-if="this.state.show_backCommentInfo_state"></comment-info>
+          <comment-info
+            v-if="this.state.show_backCommentInfo_state"
+          ></comment-info>
           <!-- 显示驾驶舱 -->
-          <cockpitWindowVue v-if="this.state.show_cockpit_state"></cockpitWindowVue>
+          <cockpitWindowVue
+            v-if="this.state.show_cockpit_state"
+          ></cockpitWindowVue>
           <!-- 显示民宿信息 -->
           <el-table v-if="state.show_homestay_state" :data="homestayInfo">
-          
             <el-table-column prop="name" label="名字" width="120">
             </el-table-column>
 
@@ -305,23 +327,29 @@
             <el-table-column
               prop="state"
               label="订购"
-              width="100"
-              v-if="order == false"
+              width="200"
             >
-              <el-button
-                type="success"
-                icon="el-icon-check"
-                circle
-                @click="orderHomestay"
-              ></el-button>
-            </el-table-column>
-            <el-table-column label="取消订购" width="100" v-if="order == true">
-              <el-button
-                type="danger"
-                icon="el-icon-delete"
-                circle
-                @click="unOrderHomestay"
-              ></el-button>
+            <template slot="header">
+           <el-button type="primary" round @click="bookHomeStay">确定预定</el-button>
+          </template>
+
+              <template slot-scope="scope">
+                <el-button
+                  type="danger"
+                  icon="el-icon-delete"
+                  circle
+                  v-if="scope.row.order"
+                  @click="unOrderHomestay(scope.row)"
+                ></el-button>
+                <el-button
+                :disabled="scope.row.success"
+                  type="success"
+                  icon="el-icon-check"
+                  circle
+                  v-else
+                  @click="orderHomestay(scope.row)"
+                ></el-button>
+              </template>
             </el-table-column>
           </el-table>
           <!-- 显示房东个人中心 -->
@@ -337,7 +365,11 @@
               <el-input v-model="ownerInfo.username" disabled></el-input>
             </el-form-item>
             <el-form-item label="密码">
-              <el-input type="password" v-model="ownerInfo.password" disabled></el-input>
+              <el-input
+                type="password"
+                v-model="ownerInfo.password"
+                disabled
+              ></el-input>
             </el-form-item>
             <el-form-item label="姓名">
               <el-input v-model="ownerInfo.name" disabled></el-input>
@@ -552,24 +584,42 @@
               </el-option>
             </el-select>
 
-  <el-form :model="productsObj">
-    <el-form-item label="名字" :label-width="10">
-      <el-input v-model="productsObj.name" autocomplete="off" :width="100"></el-input>
-    </el-form-item>
-    <el-form-item label="总数" :label-width="10">
-      <el-input v-model="productsObj.countTotal" autocomplete="off" :width="100"></el-input>
-    </el-form-item>
-    <el-form-item label="描述" :label-width="10">
-      <el-input v-model="productsObj.description" autocomplete="off" :width="100"></el-input>
-    </el-form-item>
-    <el-form-item label="图片路径" :label-width="10">
-      <el-input v-model="productsObj.img" autocomplete="off" :width="100"></el-input>
-    </el-form-item>
-  </el-form>
-  <div slot="footer" class="dialog-footer">
-    <el-button @click="addProducts = false">取 消</el-button>
-    <el-button type="primary" @click="submitAddProducts">确 定</el-button>
-  </div>
+            <el-form :model="productsObj">
+              <el-form-item label="名字" :label-width="10">
+                <el-input
+                  v-model="productsObj.name"
+                  autocomplete="off"
+                  :width="100"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="总数" :label-width="10">
+                <el-input
+                  v-model="productsObj.countTotal"
+                  autocomplete="off"
+                  :width="100"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="描述" :label-width="10">
+                <el-input
+                  v-model="productsObj.description"
+                  autocomplete="off"
+                  :width="100"
+                ></el-input>
+              </el-form-item>
+              <el-form-item label="图片路径" :label-width="10">
+                <el-input
+                  v-model="productsObj.img"
+                  autocomplete="off"
+                  :width="100"
+                ></el-input>
+              </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+              <el-button @click="addProducts = false">取 消</el-button>
+              <el-button type="primary" @click="submitAddProducts"
+                >确 定</el-button
+              >
+            </div>
           </el-dialog>
           
           
@@ -615,29 +665,45 @@ import UserInfo from "./components/UserInfo.vue";
 import CommentInfo from "./components/CommentInfo.vue";
 import cockpitWindowVue from "./components/cockpitWindow.vue";
 
-
 var config_url = config.url;
 const echarts = require('echarts');
 export default {
   name: "App",
-  components: { chatMainVue, logInVue, productListVue, cartWindow, HouseInfo, UserInfo, CommentInfo,cockpitWindowVue },
+  components: {
+    chatMainVue,
+    logInVue,
+    productListVue,
+    cartWindow,
+    HouseInfo,
+    UserInfo,
+    CommentInfo,
+    cockpitWindowVue,
+  },
   methods: {
  
+    //显示驾驶舱
+    showCockpit(){
+      this.state = {
+        show_cockpit_state: true,
+      };
+    },
     //显示用户个人中心
-    showUserInfo(){
-      var _this = this
-      _this.loading = true
-      axios.get(config_url+'/user/'+_this.userId, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-          _this.userInfo = response.data.data
+    showUserInfo() {
+      var _this = this;
+      _this.loading = true;
+      axios
+        .get(config_url + "/user/" + _this.userId, {})
+        .then(function (response) {
+          // 请求成功
+          console.log(response);
+          _this.userInfo = response.data.data;
           _this.state = {
-        show_userInfo_state: true
-      }
-      _this.loading = false
+            show_userInfo_state: true,
+          };
+          _this.loading = false;
         })
-        .catch(function (error) {// 请求失败
+        .catch(function (error) {
+          // 请求失败
           console.log(error);
         });
     },
@@ -653,42 +719,43 @@ export default {
         XLSX.writeFile(wb, 'comment.xlsx')
     },
     //修改用户个人中心
-    modifyUserInfo(){
-      this.addUser=true
-      this.userInfoObj = this.userInfo
-      console.log(this.userInfoObj)
+    modifyUserInfo() {
+      this.addUser = true;
+      this.userInfoObj = this.userInfo;
+      console.log(this.userInfoObj);
     },
     //提交添加或者修改用户信息
-    submitAddUser(){
-      var _this = this
-      
-      axios.post( config_url+'/user', 
-        _this.userInfoObj
-      )
-        .then(function (response) {// 请求成功
-          console.log(response)
+    submitAddUser() {
+      var _this = this;
+
+      axios
+        .post(config_url + "/user", _this.userInfoObj)
+        .then(function (response) {
+          // 请求成功
+          console.log(response);
           _this.$message({
-            message:"成功",
-            type:"success"
-          })
+            message: "成功",
+            type: "success",
+          });
         })
-        .catch(function (error) {// 请求失败
+        .catch(function (error) {
+          // 请求失败
           console.log(error);
           _this.$message({
-            message:"失败",
-            type:"error"
-          })
+            message: "失败",
+            type: "error",
+          });
         })
-        .finally(function(){
+        .finally(function () {
           // if(_this.state.show_allOwnerInfo_state ==true){
           //   _this.showAllOwnerInfo()
           // }
-         
-          if(_this.state.show_userrInfo_state==true){
-            _this.showUserInfo()
+
+          if (_this.state.show_userrInfo_state == true) {
+            _this.showUserInfo();
           }
-          
-          _this.addUser = false
+
+          _this.addUser = false;
         });
     },
     //显示民宿管理 房源信息界面
@@ -699,11 +766,15 @@ export default {
         .get(config_url + "/homestay", {})
         .then(function (response) {
           // 请求成功
-          _this.homestayInfo = response.data.data;
+          
+          for(let i in response.data.data){
+            response.data.data[i].order=false;
+            response.data.data[i].success=false;
+          }
           _this.state = {
             show_homestay_state: true,
           };
-
+          _this.homestayInfo = response.data.data;
           _this.loading = false;
         })
         .catch(function (error) {
@@ -743,13 +814,53 @@ export default {
       }, 500);
     },
 
-    orderHomestay() {
-      this.order = true;
+    orderHomestay(row) {
+      row.order=true;
+
     },
     //控制民宿管理 房源信息界面 的取消订购
-    unOrderHomestay() {
-      this.order = false;
+    unOrderHomestay(row) {
+      row.order=false;
+
     },
+
+    //预定房间
+    bookHomeStay(){
+      this.loading=true;
+      let homeId=[];
+      for(let i in this.homestayInfo){
+        if(this.homestayInfo[i].order){
+          homeId.push(this.homestayInfo[i].id);
+        }
+      }
+      this.$axios({
+        url:`${config_url}/homestay/book`,
+        method:"post",
+        data:homeId
+    }).then(res=>{
+        let success=res.data.data;
+        for(let i in success){
+          for(let j in this.homestayInfo){
+            if(success[i]==this.homestayInfo[j].id){
+              this.homestayInfo[j].success=true;
+              this.homestayInfo[j].order=false;
+            }
+          }
+        }
+        this.$message({
+          type: 'success',
+          message:`${success}号商品订购成功！剩下可删除的就是订购失败的哦！`
+        })
+        this.loading=false;
+      }).catch(e=>{
+        this.loading=false;
+        this.$message({
+          type: 'error',
+          message:e
+        })
+      })
+    },
+
     //显示房东 个人中心
     showOwnerInfo() {
       console.log("xxxxx");
@@ -1220,226 +1331,288 @@ export default {
         });
     },
     //房东管理 产品信息 删除产品
-    deleteProducts(e){
-      var _this = this
+    deleteProducts(e) {
+      var _this = this;
 
-console.log(e)
-axios.delete( config_url+'/product/'+e, {
-})
-  .then(function (response) {// 请求成功
-    console.log(response)
-    _this.$message({
-            message:"删除成功",
-            type:"success"
-          })
-  })
-  .catch(function (error) {// 请求失败
-    console.log(error);
-    _this.$message({
-            message:"删除失败",
-            type:"error"
-          })
-  })
-  .finally(function(){
-    _this.showOwnerProducts()
-    _this.checkOwnerProductByNameVar = null
-  });
-    },
-    //房东管理 产品信息 搜索
-    checkOwnerProductByName(){
-      var _this = this
-      axios.get( config_url+'/product/getByName/'+_this.checkOwnerProductByNameVar, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-          _this.ownerProducts=response.data.data
+      console.log(e);
+      axios
+        .delete(config_url + "/product/" + e, {})
+        .then(function (response) {
+          // 请求成功
+          console.log(response);
           _this.$message({
-            message:"查询成功",
-            type:"success"
-          })
-     
+            message: "删除成功",
+            type: "success",
+          });
         })
-        .catch(function (error) {// 请求失败
+        .catch(function (error) {
+          // 请求失败
           console.log(error);
           _this.$message({
-            message:"查询失败",
-            type:"error"
-          })
+            message: "删除失败",
+            type: "error",
+          });
+        })
+        .finally(function () {
+          _this.showOwnerProducts();
+          _this.checkOwnerProductByNameVar = null;
+        });
+    },
+    //房东管理 产品信息 搜索
+    checkOwnerProductByName() {
+      var _this = this;
+      axios
+        .get(
+          config_url + "/product/getByName/" + _this.checkOwnerProductByNameVar,
+          {}
+        )
+        .then(function (response) {
+          // 请求成功
+          console.log(response);
+          _this.ownerProducts = response.data.data;
+          _this.$message({
+            message: "查询成功",
+            type: "success",
+          });
+        })
+        .catch(function (error) {
+          // 请求失败
+          console.log(error);
+          _this.$message({
+            message: "查询失败",
+            type: "error",
+          });
         });
     },
     //后台管理 房东信息 按名字升序
-    allOwnerInfoAESCBYname(){
-      
+    allOwnerInfoAESCBYname() {
       var _this = this;
-      if(_this.checkOwnerByNameVar == null ||_this.checkOwnerByNameVar =='' )
-      {
-        axios.get( config_url+'/owner/aesc', {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.allOwnerInfo = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
+      if (
+        _this.checkOwnerByNameVar == null ||
+        _this.checkOwnerByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/owner/aesc", {})
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allOwnerInfo = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url + "/owner/aescbyname/" + _this.checkOwnerByNameVar,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allOwnerInfo = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
       }
-      else{
-        axios.get( config_url+'/owner/aescbyname/'+_this.checkOwnerByNameVar, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.allOwnerInfo = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
-      }
-      
     },
     //后台管理 房东信息 按名字降序
-    allOwnerInfoDESCBYname(){
-      
+    allOwnerInfoDESCBYname() {
       var _this = this;
-      if(_this.checkOwnerByNameVar == null ||_this.checkOwnerByNameVar =='' )
-      {
-        axios.get( config_url+'/owner/desc', {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.allOwnerInfo = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
+      if (
+        _this.checkOwnerByNameVar == null ||
+        _this.checkOwnerByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/owner/desc", {})
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allOwnerInfo = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url + "/owner/descbyname/" + _this.checkOwnerByNameVar,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.allOwnerInfo = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
       }
-      else{
-        axios.get( config_url+'/owner/descbyname/'+_this.checkOwnerByNameVar, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.allOwnerInfo = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
-      }
-      
     },
-     //房东管理 房源信息 按名字升序
-    ownerHomestayAESCBYname(){
+    //房东管理 房源信息 按名字升序
+    ownerHomestayAESCBYname() {
       var _this = this;
-      if(_this.ownerHomestayCheckByNameVar== null ||_this.ownerHomestayCheckByNameVar =='' )
-      {
-        axios.get( config_url+'/homestay/aesc/'+_this.ownerId, {
-      })
-        .then(function (response) {// 请求成功
-          console.log("============================")
-          console.log(response.data.data)
-         _this.ownerHomestay = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
-      }
-      else{
-        axios.get( config_url+'/homestay/aescbyname/'+_this.ownerHomestayCheckByNameVar+"/"+_this.ownerId, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response.data.data)
-         _this.ownerHomestay = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
+      if (
+        _this.ownerHomestayCheckByNameVar == null ||
+        _this.ownerHomestayCheckByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/homestay/aesc/" + _this.ownerId, {})
+          .then(function (response) {
+            // 请求成功
+            console.log("============================");
+            console.log(response.data.data);
+            _this.ownerHomestay = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url +
+              "/homestay/aescbyname/" +
+              _this.ownerHomestayCheckByNameVar +
+              "/" +
+              _this.ownerId,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response.data.data);
+            _this.ownerHomestay = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
       }
     },
     //房东管理 房源信息 按名字降序
-    ownerHomestayDESCBYname(){
+    ownerHomestayDESCBYname() {
       var _this = this;
-      if(_this.ownerHomestayCheckByNameVar== null ||_this.ownerHomestayCheckByNameVar =='' )
-      {
-        axios.get( config_url+'/homestay/desc/'+_this.ownerId, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.ownerHomestay = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
-      }
-      else{
-        axios.get( config_url+'/homestay/descbyname/'+_this.ownerHomestayCheckByNameVar+'/'+_this.ownerId, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.ownerHomestay = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
+      if (
+        _this.ownerHomestayCheckByNameVar == null ||
+        _this.ownerHomestayCheckByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/homestay/desc/" + _this.ownerId, {})
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.ownerHomestay = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url +
+              "/homestay/descbyname/" +
+              _this.ownerHomestayCheckByNameVar +
+              "/" +
+              _this.ownerId,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.ownerHomestay = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
       }
     },
-     //房东管理 产品信息 按名字升序
-    ownerProductAESCBYname(){
+    //房东管理 产品信息 按名字升序
+    ownerProductAESCBYname() {
       var _this = this;
-      if(_this.checkOwnerProductByNameVar == null ||_this.checkOwnerProductByNameVar =='' )
-      {
-        axios.get( config_url+'/product/aesc', {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.ownerProducts = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
-      }
-      else{
-        axios.get( config_url+'/product/aescbyname/'+_this.checkOwnerProductByNameVar, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.ownerProducts = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
+      if (
+        _this.checkOwnerProductByNameVar == null ||
+        _this.checkOwnerProductByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/product/aesc", {})
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.ownerProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url +
+              "/product/aescbyname/" +
+              _this.checkOwnerProductByNameVar,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.ownerProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
       }
     },
     //房东管理 产品信息 按名字降序
-    ownerProductDESCBYname(){
+    ownerProductDESCBYname() {
       var _this = this;
-      if(_this.checkOwnerProductByNameVar == null ||_this.checkOwnerProductByNameVar =='' )
-      {
-        axios.get( config_url+'/product/desc', {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.ownerProducts = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
-      }
-      else{
-        axios.get( config_url+'/product/descbyname/'+_this.checkOwnerProductByNameVar, {
-      })
-        .then(function (response) {// 请求成功
-          console.log(response)
-         _this.ownerProducts = response.data.data
-        })
-        .catch(function (error) {// 请求失败
-          console.log(error);
-        });
+      if (
+        _this.checkOwnerProductByNameVar == null ||
+        _this.checkOwnerProductByNameVar == ""
+      ) {
+        axios
+          .get(config_url + "/product/desc", {})
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.ownerProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
+      } else {
+        axios
+          .get(
+            config_url +
+              "/product/descbyname/" +
+              _this.checkOwnerProductByNameVar,
+            {}
+          )
+          .then(function (response) {
+            // 请求成功
+            console.log(response);
+            _this.ownerProducts = response.data.data;
+          })
+          .catch(function (error) {
+            // 请求失败
+            console.log(error);
+          });
       }
     },
     //后台管理 房源信息
-    showBackHomeStayInfo(){
+    showBackHomeStayInfo() {
       this.loading = true;
       this.state = {
-        show_backHomeStayInfo_state:true
-      }
+        show_backHomeStayInfo_state: true,
+      };
       this.loading = false;
     },
     show_Manager(){
@@ -1451,33 +1624,34 @@ axios.delete( config_url+'/product/'+e, {
     
     },
     //后台管理 用户信息
-    showBackUserInfo(){
+    showBackUserInfo() {
       this.loading = true;
       this.state = {
-        show_backUserInfo_state:true
-      }
+        show_backUserInfo_state: true,
+      };
       this.loading = false;
     },
     //后台管理 评论信息
-    showBackCommentInfo(){
+    showBackCommentInfo() {
       this.loading = true;
       this.state = {
-        show_backCommentInfo_state:true
-      }
+        show_backCommentInfo_state: true,
+      };
       this.loading = false;
-    }
+    },
   },
   data() {
     return {
+
       //undefined 数据,但是没有这个声明会进不去页面
-      controll_module:{
-        show_users:true,
-        show_owner:false,
-        show_controller:false,
+      controll_module: {
+        show_users: true,
+        show_owner: false,
+        show_controller: false,
       },
-    
+
       //临时保存数据，不要删除
-      tempInfo:null,
+      tempInfo: null,
 
       //登录状态
       login_state: false,
@@ -1526,10 +1700,10 @@ axios.delete( config_url+'/product/'+e, {
       //用来存放 民宿管理房源信息搜素框的信息
       getAllByNameVar: null,
       //用于存放 后台管理房东信息搜索框的信息
-      checkOwnerByNameVar:null,
-     //用于存放 房东管理产品信息搜索框的信息 
-      checkOwnerProductByNameVar:null,
-   //控制页面跳转
+      checkOwnerByNameVar: null,
+      //用于存放 房东管理产品信息搜索框的信息
+      checkOwnerProductByNameVar: null,
+      //控制页面跳转
       state: {
         //显示驾驶舱
         show_cockpit_state: false,
@@ -1537,35 +1711,34 @@ axios.delete( config_url+'/product/'+e, {
         show_homestay_state: false,
         //显示房东管理 个人中心
         show_ownerInfo_state: false,
-         //显示房东管理 房源信息
-        show_ownerHomestay_state:false,
-         //显示后台管理 房东信息
-        show_allOwnerInfo_state:false,
+        //显示房东管理 房源信息
+        show_ownerHomestay_state: false,
+        //显示后台管理 房东信息
+        show_allOwnerInfo_state: false,
         //显示后台管理 房源信息
-        show_backHomeStayInfo_state:false,
+        show_backHomeStayInfo_state: false,
         //显示后台管理 用户信息
-        show_backUserInfo_state:false,
+        show_backUserInfo_state: false,
         //显示后台管理 评论信息
-        show_backCommentInfo_state:false,
-         //显示房东管理 产品信息
-        show_ownerProducts_state:false,
+        show_backCommentInfo_state: false,
+        //显示房东管理 产品信息
+        show_ownerProducts_state: false,
         //显示聊天框
         show_chat_window_state:false,
         show_manager_state:false,
       },
       //用户Id
-      userId:null,
+      userId: null,
       //房东Id
       ownerId:null,
-      controllerId:null,
       //民宿iD 用于添加产品时指定民宿
-      homeId:null,
+      homeId: null,
       //控制房东添加或者修改房源的弹出框
-      ownerAddHomestay:false,
+      ownerAddHomestay: false,
       //用来控制后台添加或者修改用户的弹出框
-      addUser:false,
-    //用来控制后台添加或者修改房东的弹出框
-      addOwner:false,
+      addUser: false,
+      //用来控制后台添加或者修改房东的弹出框
+      addOwner: false,
       //用来控制民宿管理 房源信息 的订购
       order: false,
       //用来表示 页面加载时的动画
@@ -1578,13 +1751,13 @@ axios.delete( config_url+'/product/'+e, {
       printObj: {
         id: "printMe",
       },
-      ownerInfo:{
-        id:"",
-        name:"",
-        phone:"",
-        email:"",
-        username:"",
-        password:""
+      ownerInfo: {
+        id: "",
+        name: "",
+        phone: "",
+        email: "",
+        username: "",
+        password: "",
       },
       controll_module:{
         show_users:false,
@@ -1596,38 +1769,38 @@ axios.delete( config_url+'/product/'+e, {
   mounted() {
     
     //从浏览器获取购物车
-    let item=localStorage.getItem("cart");
+     let item=localStorage.getItem("cart");
     if(typeof item!= undefined){
       this.cart = JSON.parse(item);
     }else{
       this.cart=[];
     }
-    
 
     //绑定事件，从购物车与商家联系
-    this.$bus.$on('chatFromProductList',(item)=>{
+    this.$bus.$on("chatFromProductList", (item) => {
       this.showChatWindow();
-      this.$axios.get(`${config_url}/owner/product/find/${item.id}`).then(res=>{
-        if(res.data.flag==false){
-          this.$message.error("服务器连接失败");
-        }else{
-          var id=res.data.data;
-          setTimeout(() => {
-            this.$bus.$emit("addChater",id);
-          }, 500);
-        }
-      })
-
-    })
+      this.$axios
+        .get(`${config_url}/owner/product/find/${item.id}`)
+        .then((res) => {
+          if (res.data.flag == false) {
+            this.$message.error("服务器连接失败");
+          } else {
+            var id = res.data.data;
+            setTimeout(() => {
+              this.$bus.$emit("addChater", id);
+            }, 500);
+          }
+        });
+    });
 
     //绑定事件，登录组件触发时生效
     this.$bus.$on("login", (user, usertype) => {
       console.log("object :>> ");
-      
+
       this.login_state = true;
-      console.log('this.login_state :>> ', this.login_state);
+      console.log("this.login_state :>> ", this.login_state);
       //用户登录相关信息从loginIn组件传递
-      this.tempInfo=user;
+      this.tempInfo = user;
       //如果是owner登录
       if(usertype=="owner"){
         console.log("owner登录")
