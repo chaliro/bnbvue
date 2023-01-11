@@ -7,6 +7,7 @@ import JsonExcel from "vue-json-excel";
 import Print from 'vue-print-nb';
 import vueToPdf from 'vue-to-pdf';
 import * as echarts from 'echarts'
+import * as XLSX from 'xlsx'
 
 Vue.prototype.$echarts = echarts
 Vue.use(vueToPdf);

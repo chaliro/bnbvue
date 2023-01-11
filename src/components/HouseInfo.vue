@@ -86,14 +86,19 @@
         <el-input v-model="houseInfo.name" autocomplete="off" />
         <span>位置</span>
         <el-input v-model="houseInfo.location" autocomplete="off" />
-        <div class="block">
-          <div>时间</div>
-          <el-date-picker
-            v-model="houseInfo.time"
-            type="date"
-            placeholder="选择日期"
-            size="default"
-            format="YYYY-MM-DD"
+        <div class="example-basic">
+          <div>营业时间</div>
+          <el-time-picker 
+              v-model="this.options.timeOptions.value1" 
+              placeholder="开始时间" 
+              @change="setTime"
+              clearable=true
+          />
+          <el-time-picker
+              v-model="this.options.timeOptions.value2"
+              placeholder="结束时间"
+              @change="setTime"
+              clearable=true
           />
         </div>
         <span>现有房间数</span>
@@ -137,14 +142,19 @@
         <el-input v-model="houseInfo.name" autocomplete="off" />
         <span>位置</span>
         <el-input v-model="houseInfo.location" autocomplete="off" />
-        <div class="block">
-          <div>时间</div>
-          <el-date-picker
-            v-model="houseInfo.time"
-            type="date"
-            placeholder="选择日期"
-            size="default"
-            format="YYYY-MM-DD"
+        <div class="example-basic">
+          <div>营业时间</div>
+          <el-time-picker 
+              v-model="this.options.timeOptions.value1" 
+              placeholder="开始时间" 
+              @change="setTime"
+              clearable=true
+          />
+          <el-time-picker
+              v-model="this.options.timeOptions.value2"
+              placeholder="结束时间"
+              @change="setTime"
+              clearable=true
           />
         </div>
         <span>现有房间数</span>
@@ -227,9 +237,13 @@ export default {
       //选项
       options: {
         stateOptions: [
-          { value: "营业", label: "营业" },
-          { value: "休息", label: "休息" },
+          { value: "营业中", label: "营业中" },
+          { value: "暂未营业", label: "暂未营业" },
         ],
+        timeOptions:{
+          value1:'',
+          value2:''
+        }
       },
 
       //搜索框信息
@@ -382,6 +396,21 @@ export default {
           console.log(error);
         })
         .then(function () {});
+    },
+
+    //时间选择器转换时间戳设置时间
+    setTime(){
+      let date = this.options.timeOptions.value1;
+      let h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+      let m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+      let s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      let startTime = h + m + s;
+      date = this.options.timeOptions.value2;
+      h = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
+      m = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
+      s = date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds();
+      let endtTime = h + m + s;
+      this.houseInfo.time = startTime + '--' + endtTime;
     },
 
     //打印功能

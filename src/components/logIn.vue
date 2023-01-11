@@ -25,11 +25,12 @@
       <el-radio-group v-model="loginType">
         <el-radio label="user">普通用户</el-radio>
         <el-radio label="owner">房东</el-radio>
-        <el-radio label="conrtoller">管理人员</el-radio>
+        <el-radio label="controller">管理人员</el-radio>
       </el-radio-group>
       <el-divider></el-divider>
       <div>
         <el-button type="primary" v-on:click="loginAction()">登录</el-button>
+        <el-button type="primary" @click="userEnrollVisible=true">用户注册</el-button>
         <el-button type="primary" @click="ownerEnrollVisible=true">房东注册</el-button>
         <el-button type="primary" @click="findPasswordVisible=true">房东密码找回</el-button>
       </div>
@@ -37,6 +38,7 @@
 
     <OwnerEnroll v-if="ownerEnrollVisible" :addFormVisible = "ownerEnrollVisible" @closeOwnerEnroll = "ownerEnrollVisible = false" />
     <FindPassword v-if="findPasswordVisible" :modifyFormVisible = "findPasswordVisible" @closeFindPassword = "findPasswordVisible = false" />
+    <UserEnroll v-if="userEnrollVisible" :addFormVisible = "userEnrollVisible" @closeUserEnroll = "userEnrollVisible = false" />
   </div>
 </template>
 
@@ -44,6 +46,7 @@
 import config from "@/assets/config";
 import OwnerEnroll from "./OwnerEnroll.vue"
 import FindPassword from "./FindPassword.vue";
+import UserEnroll from "./UserEnroll.vue";
 
 var url = config.url;
 export default {
@@ -67,6 +70,8 @@ export default {
 
       //房东注册页面
       ownerEnrollVisible:false,
+      //用户注册
+      userEnrollVisible:false,
       //找回密码页面
       findPasswordVisible:false
     };
@@ -117,7 +122,7 @@ export default {
     },
   },
 
-  components:{ OwnerEnroll, FindPassword }
+  components:{ OwnerEnroll, FindPassword, UserEnroll }
 };
 </script>
 
