@@ -2531,7 +2531,7 @@ export default {
         //显示聊天框
         show_chat_window_state: false,
         show_manager_state:false,
-        show_allproducts_state:false，
+        show_allproducts_state:false,
         //显示旅游攻略
         show_tour_plan_state: false,
         //显示评论攻略
@@ -2635,12 +2635,14 @@ export default {
         this.ownerId=user.id;
         this.ownerInfoObj=user;
         this.controll_module = {show_owner:true};
+        this.userName = this.ownerInfoObj.username
 
       }
       if(usertype=="user"){
         this.userId=user.id;
         this.userInfoObj=user;
         this.controll_module = {show_users:true};
+        this.userName = this.userInfoObj.username
 
       }
       if(usertype=="controller"){
