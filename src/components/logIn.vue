@@ -32,7 +32,7 @@
         <el-button type="primary" v-on:click="loginAction()">登录</el-button>
         <el-button type="primary" @click="userEnrollVisible=true">用户注册</el-button>
         <el-button type="primary" @click="ownerEnrollVisible=true">房东注册</el-button>
-        <el-button type="primary" @click="findPasswordVisible=true">房东密码找回</el-button>
+        <el-button type="primary" @click="findPasswordVisible=true">密码找回</el-button>
       </div>
     </el-form>
 
