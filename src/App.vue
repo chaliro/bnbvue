@@ -1327,7 +1327,7 @@ export default {
         else {
           _this.$message({
             message: "删除失败",
-            type: "error",
+            type: "error",Cockpit
           });
         }
         _this.showComment();
