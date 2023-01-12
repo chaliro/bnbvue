@@ -348,6 +348,7 @@ export default {
       this.deleteFormVisible = true;
       this.houseInfo.id = id;
       console.log("要删除表单id为：" + id);
+      this.getHouseInfoList()
     },
     //删除信息
     handleDelete() {

@@ -236,6 +236,7 @@ export default {
       this.deleteFormVisible = true;
       this.commentInfo.id = id;
       console.log("要删除表单id为：" + id);
+      
     },
     //删除信息
     handleDelete() {
