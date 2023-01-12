@@ -58,7 +58,7 @@ export default {
             })
             .then(function (response) {
                 Message({
-                    message: '注册成功',
+                    message: '注册成功，账号为：' + response.data,
                     type: 'success'
                 });
                 console.log(response);

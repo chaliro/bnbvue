@@ -49,7 +49,6 @@ export default {
     data(){
         return{
             userInfoModel: {
-                id: "",
                 userName: "",
                 password: "",
                 phone: "",
@@ -57,7 +56,6 @@ export default {
                 sex: "",
             },
             userInfo: {
-                id: "",
                 userName: "",
                 password: "",
                 phone: "",
@@ -90,17 +88,11 @@ export default {
                 method: 'POST',
                 url: url,
                 headers: {'content-type': 'application/x-www-form-urlencoded'},
-                data: {
-                    userName: this.userInfo.userName,
-                    password: this.userInfo.password,
-                    phone: this.userInfo.phone,
-                    email: this.userInfo.email,
-                    sex: this.userInfo.sex,
-                },
+                data: this.userInfo
             })
             .then(function (response) {
                 Message({
-                    message: '注册成功',
+                    message: '注册成功，账号为：' + response.data,
                     type: 'success'
                 });
                 console.log(response);

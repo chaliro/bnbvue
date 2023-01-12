@@ -167,6 +167,8 @@
 
 <script>
 import axios from "axios";
+import { Message } from 'element-ui'
+import * as XLSX from 'xlsx' // Vue3 版本
 
 export default {
   data() {
@@ -257,6 +259,7 @@ export default {
         },
       })
         .then(function (response) {
+          Message({message: '添加成功!', type: 'success',})
           _this.getUserInfoList();
         })
         .catch(function (error) {
@@ -285,6 +288,7 @@ export default {
         data: this.userInfo,
       })
         .then(function (response) {
+          Message({message: '修改成功!', type: 'success',})
           _this.getUserInfoList();
         })
         .catch(function (error) {
@@ -304,14 +308,15 @@ export default {
     //删除信息
     handleDelete() {
       let _this = this;
-      let url = "http://localhost:8080/user/deleteUser";
+      let url = "http://localhost:8080/user";
+      url = url + '/' + this.userInfo.id;
       axios({
         method: "POST",
         url: url,
-        headers: { "content-type": "application/x-www-form-urlencoded" },
-        data: this.userInfo,
+        headers: { "content-type": "application/x-www-form-urlencoded" }
       })
         .then(function (response) {
+          Message({message: '删除成功!', type: 'success',})
           _this.getUserInfoList();
         })
         .catch(function (error) {

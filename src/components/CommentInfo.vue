@@ -129,6 +129,8 @@
 
 <script>
 import axios from "axios";
+import { Message } from 'element-ui'
+import * as XLSX from 'xlsx' // Vue3 版本
 
 export default {
   data() {
@@ -193,6 +195,7 @@ export default {
         },
       })
         .then(function (response) {
+          Message({message: '添加成功!', type: 'success',})
           _this.getCommentInfoList();
         })
         .catch(function (error) {
@@ -221,6 +224,7 @@ export default {
         data: this.commentInfo,
       })
         .then(function (response) {
+          Message({message: '修改成功!', type: 'success',})
           _this.getCommentInfoList();
         })
         .catch(function (error) {
@@ -242,15 +246,14 @@ export default {
     handleDelete() {
       let _this = this;
       let url = "http://localhost:8080/comment/deleteComment";
+      url = url + '/' + this.commentInfo.id;
       axios({
         method: "DELETE",
         url: url,
-        headers: { "content-type": "application/x-www-form-urlencoded" },
-        data: {
-          id: this.commentInfo.id,
-        },
+        headers: { "content-type": "application/x-www-form-urlencoded" }
       })
         .then(function (response) {
+          Message({message: '删除成功!', type: 'success',})
           _this.getCommentInfoList();
         })
         .catch(function (error) {
