@@ -224,7 +224,7 @@ export default {
       axios
         .get(url)
         .then(function (response) {
-          _this.userInfoList = response.data;
+          _this.userInfoList = response.data.data;
           console.log(response);
         })
         .catch(function (error) {
@@ -299,13 +299,14 @@ export default {
     getDeleteForm(row) {
       this.deleteFormVisible = true;
       this.userInfo = row;
+
     },
     //删除信息
     handleDelete() {
       let _this = this;
       let url = "http://localhost:8080/user/deleteUser";
       axios({
-        method: "DELETE",
+        method: "POST",
         url: url,
         headers: { "content-type": "application/x-www-form-urlencoded" },
         data: this.userInfo,
