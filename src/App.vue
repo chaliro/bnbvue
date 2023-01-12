@@ -2595,8 +2595,12 @@ export default {
 
     //从浏览器获取购物车
     let item=localStorage.getItem("cart");
+    console.log('item :>> ', typeof item);
     if(typeof item!= undefined){
       this.cart = JSON.parse(item);
+      if(this.cart==null){
+        this.cart=[];
+      }
     }else{
       this.cart=[];
     }
