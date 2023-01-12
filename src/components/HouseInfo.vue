@@ -207,6 +207,8 @@
 
 <script>
 import axios from "axios";
+import { Message } from 'element-ui'
+import * as XLSX from 'xlsx' // Vue3 版本
 
 export default {
   data() {
@@ -305,6 +307,7 @@ export default {
         },
       })
         .then(function (response) {
+          Message({message: '添加成功!', type: 'success',})
           _this.getHouseInfoList();
         })
         .catch(function (error) {
@@ -333,6 +336,7 @@ export default {
         data: this.houseInfo,
       })
         .then(function (response) {
+          Message({message: '修改成功!', type: 'success',})
           _this.getHouseInfoList();
         })
         .catch(function (error) {
@@ -360,6 +364,7 @@ export default {
         headers: { "content-type": "application/x-www-form-urlencoded" },
       })
         .then(function (response) {
+          Message({message: '删除成功!', type: 'success',})
           _this.getHouseInfoList();
         })
         .catch(function (error) {

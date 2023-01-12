@@ -44,6 +44,7 @@
 
 <script>
 import config from "@/assets/config";
+
 import OwnerEnroll from "./OwnerEnroll.vue"
 import FindPassword from "./FindPassword.vue";
 import UserEnroll from "./UserEnroll.vue";
