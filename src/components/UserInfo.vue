@@ -342,7 +342,7 @@ export default {
         data: data,
       })
         .then(function (response) {
-          _this.userInfoList = response.data;
+          _this.userInfoList = response.data.data;
         })
         .catch(function (error) {
           console.log(error);

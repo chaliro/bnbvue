@@ -1339,9 +1339,22 @@ export default {
     },
     //显示驾驶舱
     showCockpit(){
-      this.state = {
+      var _this = this;
+      axios
+        .request(config_url + "/controller/show" , {})
+        .then(function (response) {
+          // 请求成功
+          console.log(response);
+          _this.state = {
         show_cockpit_state: true,
       };
+          _this.loading = false;
+        })
+        .catch(function (error) {
+          // 请求失败
+          console.log(error);
+        });
+       
     },
     //显示用户个人中心
     showUserInfo() {

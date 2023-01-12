@@ -163,7 +163,7 @@ export default {
       axios
         .get(url)
         .then(function (response) {
-          _this.commentInfoList = response.data;
+          _this.commentInfoList = response.data.data;
           console.log(response);
         })
         .catch(function (error) {
